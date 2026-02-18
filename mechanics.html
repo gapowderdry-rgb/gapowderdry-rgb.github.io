@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V LARP — Field Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff2d78;
+    --neon-yellow: #ffe600;
+    --neon-green: #39ff14;
+    --bg-dark: #060810;
+    --bg-card: #0d1120;
+    --bg-card2: #0a0e1a;
+    --border: rgba(0,240,255,0.15);
+    --text-body: #b8c8d8;
+    --text-dim: #5a7a8a;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Barlow Condensed', sans-serif;
+    --body-font: 'Rajdhani', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg-dark); color: var(--text-body); font-family: var(--body-font); font-size: 17px; line-height: 1.65; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px); pointer-events: none; z-index: 1000; }
+  body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 0; }
+
+  header { position: relative; z-index: 10; text-align: center; padding: 80px 24px 60px; overflow: hidden; }
+  header::before { content: ''; position: absolute; top: -120px; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, rgba(255,45,120,0.18) 0%, transparent 70%); pointer-events: none; }
+  .header-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.35em; color: var(--neon-magenta); text-transform: uppercase; margin-bottom: 16px; animation: fadeInDown 0.6s ease both; }
+  h1 { font-family: var(--display); font-size: clamp(72px, 14vw, 148px); font-weight: 900; line-height: 0.88; letter-spacing: -0.02em; text-transform: uppercase; color: #fff; animation: fadeInDown 0.7s ease 0.1s both, glitch 8s infinite 2s; }
+  h1 span.accent { color: var(--neon-cyan); text-shadow: 0 0 30px rgba(0,240,255,0.5), 0 0 60px rgba(0,240,255,0.2); }
+  .header-sub { font-family: var(--display); font-size: clamp(16px, 2.5vw, 22px); font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); margin-top: 12px; animation: fadeInDown 0.7s ease 0.2s both; }
+  .header-divider { margin: 32px auto 0; width: 200px; height: 1px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); animation: fadeIn 1s ease 0.4s both; }
+
+  nav { position: sticky; top: 0; z-index: 200; background: rgba(6,8,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; justify-content: center; gap: 0; overflow-x: auto; animation: fadeIn 0.6s ease 0.5s both; }
+  nav a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); text-decoration: none; padding: 16px 20px; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+  nav a:hover { color: var(--neon-cyan); border-bottom-color: var(--neon-cyan); }
+
+  main { position: relative; z-index: 10; max-width: 1100px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 80px; }
+
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+  .section-number { font-family: var(--mono); font-size: 11px; color: var(--neon-magenta); letter-spacing: 0.1em; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  h2 { font-family: var(--display); font-size: clamp(28px, 5vw, 48px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; line-height: 1; }
+  h2 .glow { color: var(--neon-cyan); text-shadow: 0 0 20px rgba(0,240,255,0.4); }
+  h3 { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; margin-bottom: 10px; }
+  p { margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; padding: 28px 32px; position: relative; overflow: hidden; transition: border-color 0.3s; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--neon-cyan); }
+  .card:hover { border-color: rgba(0,240,255,0.35); }
+  .card.magenta::before { background: var(--neon-magenta); }
+  .card.yellow::before { background: var(--neon-yellow); }
+  .card.green::before { background: var(--neon-green); }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+  .callout { background: rgba(0,240,255,0.04); border: 1px solid rgba(0,240,255,0.25); border-radius: 2px; padding: 20px 24px; font-family: var(--mono); font-size: 14px; color: var(--neon-cyan); line-height: 1.7; }
+  .callout.warn { background: rgba(255,45,120,0.05); border-color: rgba(255,45,120,0.3); color: #ff8faf; }
+  .callout.tip { background: rgba(255,230,0,0.04); border-color: rgba(255,230,0,0.25); color: var(--neon-yellow); }
+  .callout-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.6; display: block; margin-bottom: 6px; }
+
+  .stat-row { display: flex; gap: 20px; flex-wrap: wrap; margin: 28px 0; }
+  .stat-box { flex: 1; min-width: 130px; background: var(--bg-card2); border: 1px solid var(--border); border-radius: 2px; padding: 20px 16px; text-align: center; }
+  .stat-val { font-family: var(--display); font-size: 42px; font-weight: 900; color: var(--neon-cyan); text-shadow: 0 0 20px rgba(0,240,255,0.4); line-height: 1; display: block; }
+  .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-top: 6px; display: block; }
+
+  .chip { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 2px; border: 1px solid; margin: 3px 3px 3px 0; text-transform: uppercase; }
+  .chip.cyan { color: var(--neon-cyan); border-color: rgba(0,240,255,0.4); }
+  .chip.mag { color: var(--neon-magenta); border-color: rgba(255,45,120,0.4); }
+  .chip.yel { color: var(--neon-yellow); border-color: rgba(255,230,0,0.4); }
+  .chip.grn { color: var(--neon-green); border-color: rgba(57,255,20,0.4); }
+  .chip.wht { color: #ccc; border-color: rgba(255,255,255,0.2); }
+
+  .ability-table { width: 100%; border-collapse: collapse; }
+  .ability-table th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .ability-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 15px; vertical-align: top; }
+  .ability-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .ability-table td:first-child { font-family: var(--mono); font-size: 13px; color: var(--neon-cyan); }
+
+  .gang-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+  .gang-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+  .gang-card:hover { transform: translateY(-2px); border-color: rgba(0,240,255,0.3); }
+  .gang-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); position: relative; }
+  .gang-name { font-family: var(--display); font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; }
+  .gang-tagline { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; margin-top: 4px; }
+  .gang-stripe { position: absolute; top: 0; right: 0; width: 4px; height: 100%; }
+  .gang-body { padding: 20px 24px; }
+  .specialty { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .specialty:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .spec-name { font-family: var(--display); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #e0e8f0; margin-bottom: 4px; }
+  .spec-role { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+
+  .fps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+  .fps-box { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 2px; padding: 16px; text-align: center; }
+  .fps-type { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 8px; }
+  .fps-val { font-family: var(--display); font-size: 36px; font-weight: 900; color: var(--neon-yellow); text-shadow: 0 0 16px rgba(255,230,0,0.35); line-height: 1; display: block; }
+  .fps-unit { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-top: 4px; display: block; }
+
+  .tagline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .tagline-item { background: var(--bg-card2); border-left: 3px solid var(--border); padding: 14px 18px; }
+  .tagline-name { font-family: var(--mono); font-size: 13px; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .tagline-desc { font-size: 14px; color: var(--text-body); line-height: 1.5; }
+
+  /* ─── CLASS SKILL SECTION ─── */
+  .class-block { margin-bottom: 60px; }
+  .class-block:last-child { margin-bottom: 0; }
+
+  .class-header { display: flex; align-items: center; gap: 0; margin-bottom: 28px; overflow: hidden; border-radius: 2px; }
+  .class-color-bar { width: 6px; height: 64px; flex-shrink: 0; }
+  .class-header-inner { background: var(--bg-card); flex: 1; padding: 14px 24px; border: 1px solid var(--border); border-left: none; }
+  .class-title { font-family: var(--display); font-size: 36px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; line-height: 1; }
+  .class-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.15em; margin-top: 4px; }
+
+  .skill-tier-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 10px; padding: 6px 12px; display: inline-block; border-radius: 2px; }
+  .tier-gang { color: var(--neon-cyan); background: rgba(0,240,255,0.06); border: 1px solid rgba(0,240,255,0.25); }
+  .tier-ganic { color: var(--neon-green); background: rgba(57,255,20,0.05); border: 1px solid rgba(57,255,20,0.2); }
+  .tier-jock { color: var(--neon-yellow); background: rgba(255,230,0,0.05); border: 1px solid rgba(255,230,0,0.2); }
+  .tier-borg { color: var(--neon-magenta); background: rgba(255,45,120,0.05); border: 1px solid rgba(255,45,120,0.2); }
+
+  .skill-list { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 20px; }
+  .skill-row { display: flex; align-items: flex-start; gap: 14px; background: var(--bg-card2); border: 1px solid rgba(255,255,255,0.04); padding: 11px 16px; border-radius: 2px; transition: border-color 0.2s; }
+  .skill-row:hover { border-color: rgba(255,255,255,0.1); }
+  .skill-slot { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; min-width: 58px; padding: 2px 8px; border-radius: 2px; text-align: center; border: 1px solid; flex-shrink: 0; margin-top: 2px; }
+  .slot-low   { color: var(--neon-green); border-color: rgba(57,255,20,0.35); background: rgba(57,255,20,0.05); }
+  .slot-mid   { color: var(--neon-yellow); border-color: rgba(255,230,0,0.35); background: rgba(255,230,0,0.05); }
+  .slot-high  { color: var(--neon-magenta); border-color: rgba(255,45,120,0.35); background: rgba(255,45,120,0.05); }
+  .slot-pass  { color: #aaa; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
+  .slot-gang  { color: var(--neon-cyan); border-color: rgba(0,240,255,0.35); background: rgba(0,240,255,0.05); }
+  .skill-info { flex: 1; }
+  .skill-name { font-family: var(--display); font-size: 16px; font-weight: 700; letter-spacing: 0.04em; color: #e8f0f8; text-transform: uppercase; }
+  .skill-desc { font-size: 14px; color: var(--text-body); line-height: 1.5; margin-top: 3px; }
+
+  .zone-diagram { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+  .body-svg-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .zone-legend { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 10px; padding-top: 8px; }
+  .zone-row { display: flex; align-items: center; gap: 12px; }
+  .zone-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .zone-info { flex: 1; }
+  .zone-name { font-family: var(--display); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .zone-detail { font-size: 13px; color: var(--text-dim); }
+
+  .sep { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 32px 0; }
+
+  footer { position: relative; z-index: 10; text-align: center; padding: 32px 24px; border-top: 1px solid var(--border); }
+  footer p { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes glitch { 0%, 94%, 100% { clip-path: none; transform: none; } 95% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translateX(-3px); } 97% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translateX(3px); } }
+
+  @media (max-width: 600px) { nav a { padding: 14px 12px; font-size: 10px; } .card { padding: 20px; } .gang-grid { grid-template-columns: 1fr; } .skill-row { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="header-eyebrow">// classified: guardian gang field manual //</p>
+  <h1><span class="accent">V</span> LARP</h1>
+  <p class="header-sub">Player Mechanics Reference — Beta Edition</p>
+  <div class="header-divider"></div>
+</header>
+
+<nav>
+  <a href="index.html" class="home-link" style="color:var(--neon-magenta)">← Home</a>
+  <a href="#core">Core Rules</a>
+  <a href="#combat">Combat</a>
+  <a href="#gangs">Gangs &amp; Classes</a>
+  <a href="#skills">Skills</a>
+  <a href="#weapons">Weapons</a>
+  <a href="#safety">Safety</a>
+  <a href="#taglines">Taglines</a>
+</nav>
+
+<main>
+
+<!-- ══════════════ SECTION 1: CORE RULES ══════════════ -->
+<section id="core">
+  <div class="section-header"><span class="section-number">01</span><h2>Core <span class="glow">Rules</span></h2><div class="section-line"></div></div>
+  <div class="callout" style="margin-bottom:28px;"><span class="callout-label">// prime directive</span>V is a game about endstage capitalism and the dystopia it creates. Combat is the primary mode of interaction. All rules serve the spirit of the game — when ambiguity arises, consult a marshal. Their call is final.</div>
+  <div class="card-grid">
+    <div class="card"><h3>The Absolute Basics</h3><p>Combat in V is <strong>silent</strong> — basic attacks require no verbal call. Players wield Nerf blasters and foam melee weapons. All damage is equalized regardless of weapon type.</p><div style="margin-top:16px;"><div class="callout tip" style="font-size:13px;"><span class="callout-label">// rule zero</span>1 HIT = 1 DAMAGE — always, everywhere.</div></div></div>
+    <div class="card magenta"><h3>In-Play vs. Out-of-Play</h3><p>The default state at any V event is <strong>in-play</strong> — you are your character. Out-of-play is indicated by wearing a neon OOP sash, or crossing index and middle fingers against your forehead briefly. Holding long OOP conversations near in-play players is a violation of gang vibe.</p></div>
+    <div class="card yellow"><h3>Pause, Action &amp; Emergency</h3><p><strong>PAUSE</strong> — All action stops. Players freeze in place. Marshal call only.</p><p><strong>ACTION</strong> — Play resumes after a Pause. Marshal call only.</p><p><strong>EMERGENCY</strong> — Real-life safety crisis. Everyone drops to OOP. No exceptions.</p></div>
+    <div class="card"><h3>Consent &amp; Safety Signals</h3><p>Cross index and middle fingers over the heart to signal discomfort. All action suspends immediately, no questions asked.</p><p>Say <strong>"Infirmary"</strong> to a marshal or NPC to exit a scene safely. They respond "Granted" and suspend action.</p></div>
+    <div class="card magenta"><h3>Searching</h3><p>Searching is never physical. Stand next to a downed/restrained target and declare <strong>"Searching."</strong> Target relinquishes all in-game items. Represents a full search of clothing, bags, and containers.</p></div>
+    <div class="card yellow"><h3>Honor System</h3><p>V operates on a <strong>three-strike system</strong>. First: verbal warning. Second: formal written warning requiring signature. Third: suspension up to full membership revocation.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 2: COMBAT ══════════════ -->
+<section id="combat">
+  <div class="section-header"><span class="section-number">02</span><h2>Combat <span class="glow">System</span></h2><div class="section-line"></div></div>
+  <div class="zone-diagram" style="margin-bottom:36px;">
+    <div class="body-svg-wrap">
+      <svg width="140" height="220" viewBox="0 0 140 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="24" r="18" fill="rgba(255,45,120,0.1)" stroke="rgba(255,45,120,0.4)" stroke-width="1.5"/>
+        <text x="70" y="29" text-anchor="middle" font-family="Share Tech Mono" font-size="8" fill="#ff2d78">HEAD</text>
+        <rect x="42" y="48" width="56" height="70" rx="2" fill="rgba(0,240,255,0.08)" stroke="rgba(0,240,255,0.5)" stroke-width="1.5"/>
+        <text x="70" y="87" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="#00f0ff">TORSO</text>
+        <text x="70" y="100" text-anchor="middle" font-family="Share Tech Mono" font-size="7" fill="rgba(0,240,255,0.5)">2 HP</text>
+        <rect x="14" y="52" width="24" height="60" rx="2" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.4)" stroke-width="1.5"/>
+        <text x="26" y="85" text-anchor="middle" font-family="Share Tech Mono" font-size="7" fill="#39ff14" transform="rotate(-90 26 85)">L ARM</text>
+        <rect x="102" y="52" width="24" height="60" rx="2" fill="rgba(57,255,20,0.07)" stroke="rgba(57,255,20,0.4)" stroke-width="1.5"/>
+        <text x="114" y="85" text-anchor="middle" font-family="Share Tech Mono" font-size="7" fill="#39ff14" transform="rotate(90 114 85)">R ARM</text>
+        <rect x="44" y="124" width="22" height="82" rx="2" fill="rgba(255,230,0,0.07)" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="55" y="168" text-anchor="middle" font-family="Share Tech Mono" font-size="7" fill="#ffe600" transform="rotate(-90 55 168)">L LEG</text>
+        <rect x="74" y="124" width="22" height="82" rx="2" fill="rgba(255,230,0,0.07)" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="85" y="168" text-anchor="middle" font-family="Share Tech Mono" font-size="7" fill="#ffe600" transform="rotate(90 85 168)">R LEG</text>
+        <line x1="58" y1="16" x2="64" y2="22" stroke="rgba(255,45,120,0.6)" stroke-width="1"/>
+        <line x1="64" y1="16" x2="58" y2="22" stroke="rgba(255,45,120,0.6)" stroke-width="1"/>
+      </svg>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--neon-magenta);letter-spacing:0.1em;text-align:center;">HEAD &amp; GROIN<br>= ILLEGAL TARGETS</div>
+    </div>
+    <div class="zone-legend">
+      <div class="zone-row"><div class="zone-dot" style="background:rgba(0,240,255,0.8);box-shadow:0 0 6px #00f0ff;"></div><div class="zone-info"><div class="zone-name">Barriers (2)</div><div class="zone-detail">Absorb first 2 hits to your whole body. Regenerate 1 every 15 consecutive seconds without damage. Does not stop special taglines.</div></div></div>
+      <div class="zone-row"><div class="zone-dot" style="background:rgba(57,255,20,0.8);box-shadow:0 0 6px #39ff14;"></div><div class="zone-info"><div class="zone-name">Graze</div><div class="zone-detail">First hit past barriers on any zone. Must be actrepped — yelp, recoil, grab the area. Shake it off and keep fighting.</div></div></div>
+      <div class="zone-row"><div class="zone-dot" style="background:rgba(255,230,0,0.8);box-shadow:0 0 6px #ffe600;"></div><div class="zone-info"><div class="zone-name">Wound</div><div class="zone-detail">Second hit on a zone. Zone is out of action. Arms: one-handed only. Legs: limp. Torso: drop prone, bleed count begins.</div></div></div>
+      <div class="zone-row"><div class="zone-dot" style="background:rgba(255,45,120,0.8);box-shadow:0 0 6px #ff2d78;"></div><div class="zone-info"><div class="zone-name">Bleed / INCAP / COLD</div><div class="zone-detail">First wound starts a 5-min bleed count (+1 min per additional wound). INCAP: unconscious, kill rag on head. COLD: death state.</div></div></div>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box"><span class="stat-val">2</span><span class="stat-label">Barriers (whole body)</span></div>
+    <div class="stat-box"><span class="stat-val">2</span><span class="stat-label">HP per zone</span></div>
+    <div class="stat-box"><span class="stat-val">5</span><span class="stat-label">Body zones</span></div>
+    <div class="stat-box"><span class="stat-val">5</span><span class="stat-label">Min bleed count</span></div>
+    <div class="stat-box"><span class="stat-val">15s</span><span class="stat-label">Barrier regen (per barrier)</span></div>
+  </div>
+  <hr class="sep">
+  <div class="card-grid">
+    <div class="card"><h3>Actrep Requirements</h3><p>V combat is <strong>theatrical</strong>. Grazes, wounds, fire, electricity, knockout — all must be actrepped convincingly. Failure to actrep is considered cheating. Melee swings are performed at <strong>medium touch</strong> speed at a 45-degree angle from the body.</p></div>
+    <div class="card magenta"><h3>Combat Reset</h3><p>A marshal may call a <strong>"Combat Reset"</strong> during long engagements. Instantly refreshes all action slots, restores wounds, and refreshes barriers. Players in INCAP or COLD are <em>not</em> restored by this call.</p></div>
+    <div class="card yellow"><h3>Cover Objects</h3><p>Inflatable cover cannot be moved by one player — takes two to drag at walking pace. <strong>Red-colored objects</strong> contain explosives and call <span style="color:var(--neon-magenta);">SPLASH 10 BOOM IGNITE</span> if struck by bullets or explosives.</p></div>
+    <div class="card"><h3>Item Drops</h3><p>NPCs may stand within ~10 seconds and respawn. If holding a key item, they hold it up then place it on the ground. Pick it up like a video game item drop.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 3: GANGS ══════════════ -->
+<section id="gangs">
+  <div class="section-header"><span class="section-number">03</span><h2>Gangs <span class="glow">&amp; Classes</span></h2><div class="section-line"></div></div>
+  <p style="margin-bottom:28px;max-width:720px;">Your gang is your class. Each gang has two specialties that define your combat role. A single "wash-out" reassignment is allowed within your first three events.</p>
+  <div class="gang-grid">
+    <div class="gang-card"><div class="gang-header"><div class="gang-stripe" style="background:var(--neon-cyan);"></div><div class="gang-name">The Vigilants</div><div class="gang-tagline">// veterans · ex-soldiers · chrome-scarred survivors //</div></div><div class="gang-body"><div class="specialty"><div class="spec-name">⚔ Steeljaw</div><div class="spec-role"><span class="chip mag">Damage</span></div><p style="font-size:14px;">Close-quarters brutality and raw firepower. Any melee except swords (heavy weapons allowed). Any firearm except long rifles. Cannot dual wield.</p></div><div class="specialty"><div class="spec-name">🛡 Iron Titan</div><div class="spec-role"><span class="chip cyan">Defense</span></div><p style="font-size:14px;">Walking fortresses with immovable will. Same loadout as Steeljaw plus shields. Only class that can use shields (start with 5 AP).</p></div></div></div>
+    <div class="gang-card"><div class="gang-header"><div class="gang-stripe" style="background:var(--neon-magenta);"></div><div class="gang-name">The Venoms</div><div class="gang-tagline">// ghosts · hitmen · precision · clean exits //</div></div><div class="gang-body"><div class="specialty"><div class="spec-name">🌑 Street Shadow</div><div class="spec-role"><span class="chip mag">Damage</span><span class="chip wht">Sabotage</span></div><p style="font-size:14px;">Only class that can use Swords. Any non-heavy melee. Pistols and SMGs only. Ability-based dual-wield melee.</p></div><div class="specialty"><div class="spec-name">🎯 Lead Slinger</div><div class="spec-role"><span class="chip yel">Marksman</span><span class="chip wht">Recon</span></div><p style="font-size:14px;">Pistols, SMGs, long rifles, and shotguns. Ability-based pistol dual wield. Intelligence and precision from the shadows.</p></div></div></div>
+    <div class="gang-card"><div class="gang-header"><div class="gang-stripe" style="background:var(--neon-yellow);"></div><div class="gang-name">The Vespers</div><div class="gang-tagline">// bladedancers · digital artists · tech &amp; instinct //</div></div><div class="gang-body"><div class="specialty"><div class="spec-name">💀 Giga Wraith</div><div class="spec-role"><span class="chip grn">Support</span><span class="chip wht">Tech Wizard</span></div><p style="font-size:14px;">Daggers only (≤18"). Pistols and SMGs. Can Blade Dance AND Backpack. TekDek required for meatspace hacks on non-sentient devices.</p></div><div class="specialty"><div class="spec-name">⚡ Blitz Geist</div><div class="spec-role"><span class="chip cyan">Control</span><span class="chip mag">Damage</span></div><p style="font-size:14px;">Daggers only (≤18"). Pistols and SMGs. Can Blade Dance. Quickhack specialist. TekDek required for meatspace hacks on non-sentient devices.</p></div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 4: ALL CLASS SKILLS ══════════════ -->
+<section id="skills">
+  <div class="section-header"><span class="section-number">04</span><h2>Class <span class="glow">Skills</span></h2><div class="section-line"></div></div>
+
+  <div class="card" style="margin-bottom:40px;">
+    <h3>Level Structure</h3>
+    <p>Players advance <strong>1 level per attended event.</strong> Gang abilities are granted at Levels 1, 4, and 7. Choose specialty powers from three tiers. Borg unlocks at Level 6. Level 10 = Max Level with Troubleshooter bonuses.</p>
+    <div class="stat-row" style="margin:16px 0 0;">
+      <div class="stat-box"><span class="stat-val" style="font-size:30px;color:var(--neon-green);">3</span><span class="stat-label">Starting Low Slots</span></div>
+      <div class="stat-box"><span class="stat-val" style="font-size:30px;color:var(--neon-yellow);">2</span><span class="stat-label">Starting Mid Slots</span></div>
+      <div class="stat-box"><span class="stat-val" style="font-size:30px;color:var(--neon-magenta);">1</span><span class="stat-label">Starting High Slot</span></div>
+      <div class="stat-box"><span class="stat-val" style="font-size:24px;color:#aaa;">Lvl 4</span><span class="stat-label">+1 Low Slot</span></div>
+      <div class="stat-box"><span class="stat-val" style="font-size:24px;color:#aaa;">Lvl 6</span><span class="stat-label">+1 Mid + Borg</span></div>
+      <div class="stat-box"><span class="stat-val" style="font-size:24px;color:#aaa;">Lvl 8</span><span class="stat-label">+1 High Slot</span></div>
+    </div>
+  </div>
+
+  <!-- ─── STEELJAW ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-cyan);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">⚔ Steeljaw</div>
+        <div class="class-subtitle">// the vigilants · damage · close-quarters brutality //</div>
+      </div>
+    </div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Built Different</div><div class="skill-desc">The Steeljaw gains 3 additional barriers that regenerate per the normal barrier description.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">Sir! Removing that Direction</div><div class="skill-desc">Gain 3 uses of Full or Shred (Shred = Full but melee-delivered) per mission.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">ASP — Autonomous Survival Protocol (Ultimate)</div><div class="skill-desc">Perform a matrix-like speed attack. Add the "Overdrive" tagline to one attack (deals 2 damage before modifiers). Usable 3 times per combat. Can be used during Sidewinder.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Pour One Out</div><div class="skill-desc">Throw a molotov cocktail. Grenade rep delivered Splash 5 Ignite.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Drop it Like it's Hot</div><div class="skill-desc">Melee deliver a Disarm.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Mawp!"</div><div class="skill-desc">Deliver a bullet-delivered Concuss.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Tis but a Flesh Wound</div><div class="skill-desc">Delay the effects of one wound for 5 minutes, at which point it begins to bleed again. The wounded limb operates normally during this time. Additional damage to the wounded area reopens it, negating the effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Per My Last Email</div><div class="skill-desc">Deliver a melee Knockout effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Red Go Fasta</div><div class="skill-desc">Charge at full sprint. Gain 3 additional barriers; every 3 steps taken during the charge recharges all 3 barriers. Effect stops when you stop moving, enter melee range, or after 15 seconds.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive / Low</span><div class="skill-info"><div class="skill-name">"No One Makes Me Bleed My Own Blood"</div><div class="skill-desc">Red go fasta now provides 1 additional starting barrier. If impacted by a graze, expend a low slot to become immune to non-pure damage unaccompanied by other taglines for 5 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"All Aboard the Pain Train"</div><div class="skill-desc">Red go fasta now uses a mid slot instead of a high slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"I Live for That Energy!!"</div><div class="skill-desc">For 5 seconds after Red go fasta's timer expires, use a single Low or Mid slot ability (excluding Red go fasta) for no slot cost.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Did He Just Stab the Mech?"</div><div class="skill-desc">Deliver one Shred tagline via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Concussion Grenade</div><div class="skill-desc">Use grenades that call Splash 5 Concuss.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">BONK!</div><div class="skill-desc">Your next melee attack applies the Knockout effect. Not usable on enemies wearing helmets.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Adrenaline Dump</div><div class="skill-desc">When you would drop to bleed out, delay dropping to bleedout for 15 seconds. Act normally and continue to take damage during this time. Once per 5 minutes.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"I'll Fold You Like Laundry!"</div><div class="skill-desc">Deliver a Break tagline via melee attack.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Iron Feast Protocol</div><div class="skill-desc">Declare "Iron feast." For the next 15 seconds, every melee hit gives 1 temporary barrier (max 5). These barriers are expended first and last until expended or the mission ends.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"You Are Cursed with Flesh!"</div><div class="skill-desc">For the next 5 seconds, every round fired by the Steeljaw has the Armor Piercing tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Why Do They Call Them Schaeffer Arms Anyway?"</div><div class="skill-desc">Pick up and carry any cover object for 15 seconds. Must walk heel-to-toe while moving it. If you drop the cover, the slot is spent and you must use another slot to lift it again.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"And Hear the Lamentations of Their Women"</div><div class="skill-desc">At the end of a Red go fasta charge, call a Splash 5 Knockback centered on yourself.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"I Hope This Email Finds You Before I Do"</div><div class="skill-desc">If undetected, "Per my last email" costs a low slot and carries the Pure tagline.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"I Found Out Lithium Explodes"</div><div class="skill-desc">Throw one Boom grenade.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Ludicrous Speed"</div><div class="skill-desc">Red go fasta now provides 3 additional starting barriers (up from 3 total to 6 total).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Unstoppable Force"</div><div class="skill-desc">Resist one non-pure Knockdown, Knockback, Shock, or other movement-impairing effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Special Beam Cannon"</div><div class="skill-desc">For 5 seconds, all bullets fired gain the Pure tagline. Effect ends early if you take a graze or wound.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Vegeta, YES!"</div><div class="skill-desc">Red go fasta now uses a low slot instead of a mid slot. Must have "All Aboard the Pain Train."</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"The Forsberg Special"</div><div class="skill-desc">Deliver one Death tagline via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Bloodlust"</div><div class="skill-desc">Delay all wounds for 5 minutes. If all hit zones reach 0 from damage, immediately fall to cold. Each melee kill during Bloodlust extends the delay by 1 minute (max +5 min = 10 total). When Bloodlust ends without healing, fall to cold.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Thought I'd Try Shooting My Way Out. Mix Things Up a Little."</div><div class="skill-desc">Become immune to all non-pure damage for 15 seconds. Each killing blow extends immunity by 3 seconds (max +15 sec from 5 kills). At the end of immunity, take a Pure Full.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Plus Ultra"</div><div class="skill-desc">Inspire allies. Call "By the sound of my voice, restore 1."</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Chrome Carnivore"</div><div class="skill-desc">Iron Feast Protocol now uses a mid slot instead of a high slot.</div></div></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ─── IRON TITAN ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-cyan);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">🛡 Iron Titan</div>
+        <div class="class-subtitle">// the vigilants · defense · walking fortress · shields //</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-bottom:20px;font-size:13px;"><span class="callout-label">// equipment note</span>Iron Titans are the ONLY class that may use shields. Basic shields start with 5 AP. Shields Clank when struck and have their own AP pool.</div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Built Different</div><div class="skill-desc">The Iron Titan gains 3 additional barriers that regenerate per the normal barrier description.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">Sir! Removing that Direction</div><div class="skill-desc">Gain 3 uses of Full or Shred (Shred = Full but melee-delivered) per mission.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">ASP — Autonomous Survival Protocol (Ultimate)</div><div class="skill-desc">Perform matrix-style dodges or blocks on any incoming damage for 3 attacks. Call "No effect" for each blocked attack. Can be used during Sidewinder.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Come Back with Your Shield or on It</div><div class="skill-desc">Spend 5 seconds of uninterrupted actrep repairing your shield; it is restored to full capacity. Interrupted by incoming damage or inaction — slot is not spent but count resets.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">What's with All These Mosquitoes</div><div class="skill-desc">Gain 3 additional temporary barriers that last for 60 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Bulwark</div><div class="skill-desc">Plant your feet and act as living cover for 30 seconds. Call CLANK on all incoming non-pure damage in front of you. Effect ends instantly if you move your feet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Ground and Pound</div><div class="skill-desc">Slam your weapon or shield on the ground to call Splash 5 Concuss.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Plot Armor</div><div class="skill-desc">Resist one non-pure Splash or Boom tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Hold My Beer</div><div class="skill-desc">Break or remove any non-permanent structure or barrier.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"It Just Takes a Little Momentum"</div><div class="skill-desc">You may now walk heel-to-toe during Bulwark instead of being fully stationary.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Push Through"</div><div class="skill-desc">Use your immense strength to knock an item from a target's hands. Deliver the Disarm tagline via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Puny God.."</div><div class="skill-desc">Use your two-handed weapon to deliver a Knockdown or Knockback.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"I Saw This in a Movie"</div><div class="skill-desc">While within 20 feet, mime "throwing" your shield (do not actually throw it) to deliver Indicate Knockout. The Iron Titan suffers a 5-second shield disarm after use.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"He Escaped in a Tiny Tank!"</div><div class="skill-desc">Delay all wounds for 1 minute. Move at full speed toward an evacuation point and drag up to two allies. Cannot attack or use other abilities. At 1 minute, fall INCAP regardless of remaining bleed time. Neither you nor dragged allies may return to the mission — report to triage.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Like Water off a Duck's Back"</div><div class="skill-desc">"What's with all the mosquitoes" now adds 6 temporary barriers instead of 3. Must have "What's with all the mosquitoes."</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Suppress This!"</div><div class="skill-desc">Throw an incendiary device. Splash 5 Ignite.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Ouch! I Almost Gave a Fuck!"</div><div class="skill-desc">Plot Armor now costs a low slot. Must have Plot Armor to take this skill.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"...Whatever the Cost"</div><div class="skill-desc">Channel for 10 seconds; instantly restore all of your barriers at the end. If struck or moved during the channel, concentration breaks, slot is spent, and barriers are not restored.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Your Tears Sustain Me!"</div><div class="skill-desc">Landing the killing blow — by bullet, melee, or ability — instantly restores one barrier.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"I'm Bullet Proof, Baby!"</div><div class="skill-desc">Resist one "armor piercing" attack.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Bite My Shiny Metal Ass!"</div><div class="skill-desc">Magnetically align the metals in your cyberware, making it harder. Gain 8 armor points.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Asleep on the Job"</div><div class="skill-desc">If undetected, deliver a Pure Knockout via melee weapon.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"The Tech Bros Call It Antivirus"</div><div class="skill-desc">A security stack built into your cyberware. Resist one indicate/hack effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Every Problem IS a Nail."</div><div class="skill-desc">Use your two-handed weapon to deliver a Shred.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Iron Will"</div><div class="skill-desc">Continue to fight and act normally during your bleed out count. If all 5 hit zones are fully wounded, fall INCAP immediately.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Make Way for Baba!"</div><div class="skill-desc">You may now move at full speed during Bulwark.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"The Attack Titan"</div><div class="skill-desc">All bullets fired and all melee attacks are considered Pure for 15 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"The Best Defense"</div><div class="skill-desc">All attacks from your two-handed weapon deliver a Concuss for the next 30 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"The Missions Change, They Always Do."</div><div class="skill-desc">Channel for 10 seconds; instantly restore the barriers of all allies within 5 feet. Call is Splash 5 Restore Barrier. Interrupted if struck or moved — slot is spent and barriers are not restored.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Shield Hero"</div><div class="skill-desc">Project an electromagnetic barrier. Cannot move or act. For 15 seconds, absorb all incoming non-pure damage in a 10-foot radius. Fall INCAP at the end of 15 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"This Is Where We Fight! This Is Where They Die!"</div><div class="skill-desc">In addition to "Your tears sustain me," become immune to all non-pure damage for 5 seconds after landing a killing blow.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"All Power to the Shields!!"</div><div class="skill-desc">Increase the number of AP your shield generates by 3.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Iron Scarab"</div><div class="skill-desc">Use two shields simultaneously. Cannot make offensive attacks at all (exceptions: Ground and Pound, "I saw this in a movie"). All other shield abilities usable with both shields for the same cost.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Quake"</div><div class="skill-desc">The range of Ground and Pound extends to 10 feet. Must have Ground and Pound.</div></div></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ─── STREET SHADOW ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-magenta);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">🌑 Street Shadow</div>
+        <div class="class-subtitle">// the venoms · damage / sabotage · cyberninja · swords exclusive //</div>
+      </div>
+    </div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Silent Takedown</div><div class="skill-desc">While sneaking undetected behind a target, deliver an "execute." Repeatable on multiple targets while remaining undetected. Fails if combat is engaged or the target is on high alert.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">Corrode</div><div class="skill-desc">3 uses of the Corrode tagline per mission, delivered via blade or bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">Sidewinder (Ultimate)</div><div class="skill-desc">Call "Encounter wide Freeze 3 seconds." All others freeze in place (unless they also activate Sidewinder). Act at full speed for the allotted time. Call "Resume" when done. No abilities may be used during Sidewinder.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Pocket Sand"</div><div class="skill-desc">Throw dust in a target's eyes. Deliver a Blind via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Grapple Bullet</div><div class="skill-desc">Fire a gas-powered grapple bullet and zip or swing rapidly to the landing location. Considered functionally OOP in transit — indicated by fingers crossed over the head. Must move at a reasonably fast pace to actrep the maneuver.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"I Said Leave No Trace"</div><div class="skill-desc">Carry a wounded player at a full sprinting pace for one minute, eliminating the need to rep the slow pace of dragging a body.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Tactical Scan</div><div class="skill-desc">Deploy a single energy pulse within an indoor environment. Ask a marshal about basic features, geography, and number of enemies in the space. Pulse only extends through open spaces (hallways, open doorways, etc.).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Stealth Emitter</div><div class="skill-desc">Activate active camouflage, bending light around you to render yourself invisible for 15 seconds. Indicated by two hands crossed over the head. Must move at heel-to-toe walking pace — any faster movement breaks the effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Does This Smell Like Chloroform?"</div><div class="skill-desc">Deliver a Knockout via melee weapon (pommel-first sword strike to the back of the head).</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">I Studied the Blade, Twice</div><div class="skill-desc">You may now dual-wield swords.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"The Light Was Nothing but Blinding!"</div><div class="skill-desc">"Use a flash grenade" — deliver Splash 5 Blind centered on yourself.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">I Built This Body Brick by Brick</div><div class="skill-desc">While bleeding out, perform first aid on your own wounds as long as one hand is free. A 30-second channel extends your bleed out count by 5 minutes.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Twin Strikes</div><div class="skill-desc">Attack with both blades simultaneously to deliver a Shred effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Parry Bullets</div><div class="skill-desc">Hold your sword(s) defensively to become immune to non-pure bullet attacks for 5 seconds. Breaks if you do anything but defend or move faster than a slow walk.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">After Images</div><div class="skill-desc">Overclock your stealth emitter to project overlapping images of yourself. Gain 2 additional barriers for 15 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">I'm Sneaky Enough for the Two of Us</div><div class="skill-desc">While your stealth emitter is active, you can actively guide another person in stealth — both players are considered in active stealth. Stealth breaks for both if either's stealth is broken.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Precision Strikes</div><div class="skill-desc">When using a single blade, your monomolecular blade is so sharp you may deliver a Shred effect via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Any Slot</span><div class="skill-info"><div class="skill-name">Kicking Like a Six-Legged Ninja</div><div class="skill-desc">If unarmed, expend any slot to deliver Splash 5 Knockback centered on yourself.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Wonderful Toys</div><div class="skill-desc">Use your grapple bullet to fire a single Disarm on a target, or grab a distant non-sentient object. (Marshal discretion applies.)</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Huh? It's Just a Box</div><div class="skill-desc">The stealth emitter now requires a low slot to activate (instead of a high slot — effectively cheaper).</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Wake Me When You Need Me"</div><div class="skill-desc">Throw a gas grenade that delivers Splash 5 Knockout to nearby enemies. Must use a grenade/bomb rep. The Street Shadow is immune to the gas.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Telltale Shimmer</div><div class="skill-desc">Your stealth emitter now allows you to move at full speed instead of heel-to-toe.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"I'm Not Even Winded"</div><div class="skill-desc">A melee kill instantly refreshes 1 Low Slot. Limited to 3 times per encounter.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">A Matter of Honor!</div><div class="skill-desc">When an ally enters INCAP state, mark the killer and gain non-pure damage immunity for 10 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"And Taxes"</div><div class="skill-desc">Instantly kill an enemy with a melee weapon: call Pure Death. Some enemies may have protections against this effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Bullet Proof</div><div class="skill-desc">You may now move at full speed while under the effects of Parry Bullets.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">You Merely Adopted the Dark</div><div class="skill-desc">You are immune to non-pure blind effects.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Thousand Blades</div><div class="skill-desc">Deliver one Shred effect per blade held. Must have Twin Strikes.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">I Found Your Blind Spot</div><div class="skill-desc">The first attack after your stealth emitter breaks — or after an enemy is blinded — may be delivered with the Pure tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Shadow Windmill"</div><div class="skill-desc">Throw a large ninja star (must be repped and at least 1 foot in diameter). Upon impact, delivers a Death effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Sensu Bean!"</div><div class="skill-desc">Meditative practices allow you to restore one of your own hitpoints after a 5-second channel.</div></div></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ─── LEAD SLINGER ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-magenta);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">🎯 Lead Slinger</div>
+        <div class="class-subtitle">// the venoms · marksman / recon · long-range precision · intel //</div>
+      </div>
+    </div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Silent Takedown</div><div class="skill-desc">While undetected, deliver up to 2 "Indicate Execute" effects before being detected. Range is line-of-sight with your firearm.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">Corrode</div><div class="skill-desc">3 uses of the Corrode tagline per mission, delivered via blade or bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">Sidewinder (Ultimate)</div><div class="skill-desc">Call "Encounter wide Freeze 3 seconds." All others freeze in place (unless they also activate Sidewinder). Act at full speed for the allotted time. Call "Resume" when done. No abilities may be used during Sidewinder.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Snake? Snake? Snaaake... Is Asleep!"</div><div class="skill-desc">Deliver a Knockout via bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Grapple Bullet</div><div class="skill-desc">Fire a gas-powered grapple and zip or swing rapidly to the landing location. Functionally OOP in transit — indicated by fingers crossed over the head. Must move at a reasonably fast pace to actrep the maneuver.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"I Said Leave No Trace"</div><div class="skill-desc">Carry a wounded player at a full sprinting pace for one minute, eliminating the slow pace required for dragging a body.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Tactical Scan</div><div class="skill-desc">Deploy a single energy pulse within an indoor environment. Ask a marshal about basic features, geography, and number of enemies in the space through open areas only.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Stealth Emitter</div><div class="skill-desc">Activate active camouflage, invisible for 15 seconds. Two hands crossed over the head. Heel-to-toe walking pace — any faster movement breaks the effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Use the Big One</div><div class="skill-desc">Throw a homemade grenade. Deliver Splash 5 Boom via grenade rep or grenade launcher (rocket rep).</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Lip Reader Extraordinaire</div><div class="skill-desc">With a marshal present, read the lips of chosen target(s) through the scope of your rifle.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Eyes in the Sky</div><div class="skill-desc">Request information from the marshal about the general direction and numbers of the enemy.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Wonderful Toys</div><div class="skill-desc">Use your grapple bullet to fire a single Disarm on a target or grab a distant non-sentient object. (Marshal discretion applies.)</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Mo Guns Mo Bettah</div><div class="skill-desc">Gain the ability to dual-wield single-handed guns.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Happy Accidents</div><div class="skill-desc">Up to 3 times per mission, reclaim the spent slots on abilities delivered by your firearm if the shot missed its target completely.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Keep Your Damn Head Down!</div><div class="skill-desc">Stack 1 additional barrier on a player in cover with the Leadslinger. Effect ends when players separate or leave cover.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">So Anyway, I Started Blasting</div><div class="skill-desc">If dual-wielding and you fire a tagline with one gun, you can fire the same tagline from your other gun for free.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Tear Gas</div><div class="skill-desc">Fire a canister to deliver Splash 5 Blind via grenade rep or grenade launcher (rocket rep).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">I Like the Big Ones</div><div class="skill-desc">Boom grenades now cost a mid slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"The No-Scope Special"</div><div class="skill-desc">You've trained to rely on other senses. You are immune to non-pure blind effects.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"I'm Batman"</div><div class="skill-desc">You may now bring one other person with you when using Grapple Bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Bringing the Heat"</div><div class="skill-desc">Using a long rifle, fire an incendiary round to deliver an Ignite via bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"I Can Remotely Access Things Too"</div><div class="skill-desc">Manipulate the environment by shooting objects — turn or disable cameras, throw levers, hit buttons, or knock over items as a distraction.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Maximum Effort</div><div class="skill-desc">Restore one wounded zone on yourself on a 5-count.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">I Built This Body Brick by Brick</div><div class="skill-desc">While bleeding out, perform first aid on your own wounds as long as one hand is free. A 30-second channel extends your bleed out count by 5 minutes.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Where Are They?</div><div class="skill-desc">Your Silent Takedown limit is increased to 3 indicate executes before being detected.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Ricochet</div><div class="skill-desc">Add the Indicate tagline to a bullet effect when a target is out of line of sight — provided there is at least one way to close the distance between you and the target (the target cannot be in a sealed room).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">The White Death</div><div class="skill-desc">Deliver one Death effect via bullet, whether detected or not.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Shot Before the Sound</div><div class="skill-desc">While using a single-action rifle, repeat a tagline call for no additional slot cost.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Wing Clip</div><div class="skill-desc">Deliver one Full effect via bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Directed by Michael Bay</div><div class="skill-desc">Boom grenades now cost a low slot. Must have "I Like the Big Ones."</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Reckon You're Lookin' for a Whoopin', Partner."</div><div class="skill-desc">Should you run out of ammo, gain 5 armor and may call Concuss on melee attacks for 10 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">That Bitch Is Toxic</div><div class="skill-desc">Deliver Splash 5 Full Corrode via grenade rep or grenade launcher (rocket rep).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Fashion over Function</div><div class="skill-desc">Your choice of attire and knowledge of typical firing angles grant further protection. Gain 3 additional barriers.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Nah, I Packed These Shots Myself</div><div class="skill-desc">While using a shotgun, add the Pure tagline to your shots for 10 seconds, including Full when applicable.</div></div></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ─── GIGA WRAITH ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-yellow);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">💀 Giga Wraith</div>
+        <div class="class-subtitle">// the vespers · support / tech wizard · blade dancer + backpacker · ghost in the grid //</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-bottom:20px;font-size:13px;"><span class="callout-label">// class note</span>Giga Wraiths are automatically capable of both <strong>Blade Dancing</strong> (projecting consciousness into netspace) and <strong>Backpacking</strong> (pairing with a meatspace ally via Bluetooth to extend abilities). After 15 minutes in netspace, take 1 Pure damage every 2 minutes. A <strong>TekDek</strong> (wrist/arm device) is required for meatspace hacks on non-sentient devices. Hacks on sentient beings must be delivered via bullet or melee.</div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Fastjack</div><div class="skill-desc">Add the "Indicate" tagline to one of your available hacks on non-sentient technology.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">"404: Pulse Not Found"</div><div class="skill-desc">Gain 3 uses of the Shock tagline per mission.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">EMP (Ultimate)</div><div class="skill-desc">Turn your target into an EMP bomb. All cybernetics and electronics within a 5-foot radius of the target shut down for 5 seconds. Call is "Splash 5 Silence." Once per encounter.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Restore Point</div><div class="skill-desc">Via touch on one wound, delay the effects of that wound until the end of combat or until the wounded area is damaged again.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Fuckin' Limewire</div><div class="skill-desc">Pump popups into the visual feed of your target. Deliver one Blind effect. Can target non-sentient objects with optics (cameras, drones). This effect may alert anyone watching the feed.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Ursula</div><div class="skill-desc">Hack the target's ability to speak or vocalize. Mute tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Nessus</div><div class="skill-desc">Ask the marshal for a chrome count and tactical breakdown of the target.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Eyes in the Back of Your Head</div><div class="skill-desc">Grant your battle buddy 1 resist to a non-pure bullet- or melee-delivered tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">It's Getting Dark and My Battery Is Low</div><div class="skill-desc">"Puppeteer" your incapped battle buddy's chrome. Give them basic commands: walk, crawl, stand, sit. They cannot run, fight, or use abilities — extraction and seeking aid only. Any additional damage acts per the rules. Falls cold = effect ends.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Switcharoo</div><div class="skill-desc">Sacrifice your own high slot to restore one of your battle buddy's slots (may be low, mid, or high).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Sometimes Things Explode, We Live in an Imperfect World</div><div class="skill-desc">Target overheats and becomes an incendiary grenade. Delivers Splash 5 Ignite centered on the target.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Hot Swap</div><div class="skill-desc">When your jacked-in ally drops, swap HP — your companion is restored to full health.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">Virtual Ram</div><div class="skill-desc">Switcharoo now sacrifices a mid slot instead of a high slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Cortical Singularity"</div><div class="skill-desc">You can now blade dance for 30 minutes without incurring netspace penalties.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Overclock"</div><div class="skill-desc">Grant one additional barrier to an ally for the duration of the mission. The barrier regenerates as normal.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Reroute</div><div class="skill-desc">Restore one hit zone on yourself or an ally.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Nano Injection"</div><div class="skill-desc">Bring an ally who has gone INCAP back to 1 HP per hit zone.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Tesla Coils: Bringing the Thunder Indoors Since 1891"</div><div class="skill-desc">Turn your target into a tesla coil. Deliver Splash 5 Shock centered on the target.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Surgeproof"</div><div class="skill-desc">Resist one Backlash tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Tag Along"</div><div class="skill-desc">Bring a non-Vesper with you into netspace, but your time before penalties tick down twice as fast.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Sit Still and Stare Straight Ahead"</div><div class="skill-desc">Hack a camera or drone's optics and loop the visual feed. Notify a marshal. Actrep hacking on your TekDek. This does not work in combat.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Neural Loop"</div><div class="skill-desc">Hijack the cybernetic connections of your target, causing a feedback loop in the brain. Deliver one Knockout effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Backpack Hack"</div><div class="skill-desc">While backpacking an ally, you can hack through the ally's vision. Direct the player you're backpacking to deliver indicate and effect taglines by pointing at the target. May only use mid or low slot abilities. Includes healing.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Override</div><div class="skill-desc">Take control of a non-sentient simple device for 60 seconds (camera, door, etc.).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Echo Pulse"</div><div class="skill-desc">Use nearby electronics to produce a 10-foot wide sonar-like pulse centered on yourself. Call is "Splash 10 Reveal" — cancels all stealth within the radius and prevents re-entry for 10 seconds.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"EMP Threading"</div><div class="skill-desc">Built-in protection against EMP/Silence effects. Resist one non-pure EMP/Silence effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Resistance Is Futile… Especially When the Voltage Is This High."</div><div class="skill-desc">Tesla Coils now uses a Low slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Get in the Robot, Shinji"</div><div class="skill-desc">Take over an enemy's cyberware for 30 seconds. Call is "Compel." Commands limited to: "Stop," "Run away," or "Fight your friends." Cannot target enemies in Netspace.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">NMAP</div><div class="skill-desc">Ask the marshal for a chrome count and tactical breakdown of all targets you are aware of and capable of scanning (maximum 5 targets).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"It's Called a Firewall…"</div><div class="skill-desc">Grant 1 extra barrier (as Overclock) to up to 5 allies simultaneously.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Neural Apotheosis"</div><div class="skill-desc">Transcend the limitations of humanity and tap into the source code of reality. Call "By the sound of my voice, Revive Restore." This is an encounter-wide effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"This Is MY Song!"</div><div class="skill-desc">In netspace, reach a flow state. For 30 seconds: immune to all non-pure effects, and all hacks may have the Indicate tagline added to them. Fall INCAP and drop out of netspace at the end of 30 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Offsite Backups"</div><div class="skill-desc">Bring an ally who has gone COLD back to 1 HP per hit zone.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Cerebral Daemon"</div><div class="skill-desc">You can now Blade Dance for 45 minutes without incurring netspace penalties.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Giga Link"</div><div class="skill-desc">Switcharoo now sacrifices a low slot instead of a mid slot.</div></div></div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ─── BLITZ GEIST ─── -->
+  <div class="class-block">
+    <div class="class-header">
+      <div class="class-color-bar" style="background:var(--neon-yellow);"></div>
+      <div class="class-header-inner">
+        <div class="class-title">⚡ Blitz Geist</div>
+        <div class="class-subtitle">// the vespers · control / damage · quickhack specialist · blade dancer //</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-bottom:20px;font-size:13px;"><span class="callout-label">// class note</span>Blitzgeists are automatically capable of <strong>Blade Dancing</strong> (projecting consciousness into netspace). After 15 minutes in netspace, take 1 Pure damage every 2 minutes. A <strong>TekDek</strong> (wrist/arm device) is required for meatspace hacks on non-sentient devices. Hacks on sentient beings must be delivered via bullet or melee.</div>
+
+    <div class="skill-tier-label tier-gang">Gang Abilities</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 1</span><div class="skill-info"><div class="skill-name">Fastjack</div><div class="skill-desc">Add the "Indicate" tagline to one of your available hacks on non-conscious technology.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 4</span><div class="skill-info"><div class="skill-name">"404: Pulse Not Found"</div><div class="skill-desc">Gain 3 uses of the Shock tagline per mission.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-gang">Lvl 7 ⚡</span><div class="skill-info"><div class="skill-name">EMP (Ultimate)</div><div class="skill-desc">Turn your target into an EMP bomb. All cybernetics and electronics within a 5-foot radius of the target shut down for 5 seconds. Call is "Splash 5 Silence." Once per encounter.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-ganic">Ganic Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Hey Stop That</div><div class="skill-desc">Disable a targeted weapon. Deliver one Disarm effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Ursula</div><div class="skill-desc">Hack the target's ability to speak or vocalize. Mute tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Restore Point</div><div class="skill-desc">Via touch on one wound, delay the effects of that wound until the end of combat or until the wounded area is damaged again.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">My Web History!</div><div class="skill-desc">Flood the target's visual field with popups. Deliver one Blind effect. Can target non-sentient objects with optics (cameras, drones). May alert anyone watching the feed.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Set Us Up the Bomb</div><div class="skill-desc">Target overheats and becomes an incendiary grenade. Delivers Splash 5 Ignite centered on the target.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">Override</div><div class="skill-desc">Take control of a non-sentient simple device for 60 seconds (camera, door, etc.).</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-jock">Jock (Chrome Jockey) Skills</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"I Said, I Cast Fireball!"</div><div class="skill-desc">"Set us up a bomb" now uses a mid slot instead of a high slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Cortical Singularity"</div><div class="skill-desc">You can now blade dance for 30 minutes without incurring netspace penalties.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Pain.exe</div><div class="skill-desc">Hijack the synthetic nociceptors in your target's cyberware, causing immense pain. Deliver one Full effect via bullet.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">Reroute</div><div class="skill-desc">Restore one hit zone on yourself or an ally.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"It's Not That Kind of Penetration Test."</div><div class="skill-desc">Hijack synthetic nociceptors with a blade. Deliver a Shred effect via melee weapon.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Tesla Coils: Bringing the Thunder Indoors Since 1891"</div><div class="skill-desc">Turn your target into a tesla coil. Deliver Splash 5 Shock centered on the target.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"EMP Threading"</div><div class="skill-desc">Built-in protection against EMP/Silence effects. Resist one EMP/Silence effect.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Sit Still and Stare Straight Ahead"</div><div class="skill-desc">Hack a camera or drone's optics and loop the visual feed. Notify a marshal. Actrep hacking on TekDek. Renders you undetected by any non-sentient tech. Does not work in combat.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">Black ICE AV</div><div class="skill-desc">Grant yourself or one ally immunity to one non-pure effect (Blind, Disarm, Mute, Knockback, Knockdown, or Knockout) for the duration of the mission. Works in both meatspace and netspace.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Tag Along"</div><div class="skill-desc">Bring a non-Vesper into netspace with you, but your time before penalties tick down twice as fast.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Oops, All Galaxy Note 7s"</div><div class="skill-desc">Overload your target's cyberware, causing it to explode. Deliver one Boom effect centered on the target.</div></div></div>
+    </div>
+
+    <div class="skill-tier-label tier-borg">Borg Skills (Unlocks at Level 6)</div>
+    <div class="skill-list">
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"OMFG LAAAAAAAAAAAAG"</div><div class="skill-desc">A DDOS attack on the target's cyberware prevents their barriers from working. All attacks made by the Blitzgeist for the next 5 seconds are Pure.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Exterminate, Exterminate, Exterminate!!!"</div><div class="skill-desc">"Set us up a bomb" now uses a low slot. Must have "I said, I cast fireball!" to take this skill.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Echo Pulse"</div><div class="skill-desc">Use nearby electronics to produce a 10-foot wide sonar-like pulse centered on yourself. Call is "Splash 10 Reveal" — cancels all stealth within the radius and prevents re-entry for 10 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-pass">Passive</span><div class="skill-info"><div class="skill-name">"Cerebral Daemon"</div><div class="skill-desc">You can now Blade Dance for 45 minutes without incurring netspace penalties.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Synapse Collapse"</div><div class="skill-desc">Deliver one Death tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Get in the Robot, Shinji"</div><div class="skill-desc">Take over an enemy's cyberware for 30 seconds. Call is "Compel." Commands limited to: "Stop," "Run away," or "Fight your friends." Cannot target enemies in Netspace.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-low">Low</span><div class="skill-info"><div class="skill-name">"Resistance Is Futile… Especially When the Voltage Is This High."</div><div class="skill-desc">Tesla Coils now uses a Low slot.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">"Surgeproof"</div><div class="skill-desc">Resist one Backlash tagline.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"This Is MY Song!"</div><div class="skill-desc">In netspace, reach a flow state. For 30 seconds: immune to all non-pure effects, and all hacks may have the Indicate tagline added to them. Fall INCAP and drop out of netspace at the end of 30 seconds.</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-mid">Mid</span><div class="skill-info"><div class="skill-name">NMAP</div><div class="skill-desc">Ask the marshal for a chrome count and tactical breakdown of all targets you are aware of and capable of scanning (maximum 5 targets).</div></div></div>
+      <div class="skill-row"><span class="skill-slot slot-high">High</span><div class="skill-info"><div class="skill-name">"Neural Apotheosis"</div><div class="skill-desc">Transcend the limitations of humanity and tap into the source code of reality. Call "By the sound of my voice, Revive Restore." This is an encounter-wide effect.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 5: WEAPONS ══════════════ -->
+<section id="weapons">
+  <div class="section-header"><span class="section-number">05</span><h2>Weapon <span class="glow">Rules</span></h2><div class="section-line"></div></div>
+  <div class="callout warn" style="margin-bottom:28px;"><span class="callout-label">// mandatory</span>All weapons are subject to safety checks at check-in. Blasters are chronographed. Melee weapons are examined for foam density. Approved blasters are tagged with a zip tie. Any weapon may be rechecked by staff at any time.</div>
+  <h3 style="margin-bottom:16px;">FPS Limits by Ammo Type</h3>
+  <div class="fps-grid">
+    <div class="fps-box"><span class="fps-type">Elite Darts</span><span class="fps-val">140</span><span class="fps-unit">FPS MAX</span></div>
+    <div class="fps-box"><span class="fps-type">Half Darts</span><span class="fps-val">150</span><span class="fps-unit">FPS MAX</span></div>
+    <div class="fps-box"><span class="fps-type">Rival Rounds</span><span class="fps-val">110</span><span class="fps-unit">FPS MAX</span></div>
+    <div class="fps-box"><span class="fps-type">Mega Darts</span><span class="fps-val">100</span><span class="fps-unit">FPS MAX</span></div>
+  </div>
+  <div class="callout" style="margin:20px 0;font-size:13px;"><span class="callout-label">// ammo note</span>Only Nerf or Nerf-compatible ammo approved. Solid-tip off-brand darts are illegal. Off-brand Rival ammo excluded. Recommended budget option: Walmart "Adventure Force" line.</div>
+  <hr class="sep">
+  <h3 style="margin-bottom:16px;">Firearm Classifications</h3>
+  <div style="overflow-x:auto;margin-bottom:28px;">
+    <table class="ability-table">
+      <thead><tr><th>Type</th><th>Definition</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>Pistol</td><td>Single-handed, ≤20 rounds/mag or hopper</td><td>Hammer, semi, or full auto</td></tr>
+        <tr><td>SMG</td><td>Automatic, ≤30 rounds/mag or hopper</td><td>2-handed (unless Lead Slinger)</td></tr>
+        <tr><td>Assault Rifle</td><td>Automatic, 30+ rounds/mag or hopper</td><td>2-handed required</td></tr>
+        <tr><td>Long Rifle</td><td>2-action: load + trigger</td><td>No auto or semi-auto</td></tr>
+        <tr><td>Shotgun</td><td>2-action: pump/hammer + trigger</td><td>No auto or semi-auto</td></tr>
+        <tr><td>Grenade</td><td>Soft foam ball ~2.5–3" diameter, painted</td><td>No core or weight inside</td></tr>
+        <tr><td>Rocket</td><td>Nerf Mega Missile or Blue Mega Darts</td><td>Must be visually identifiable</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3 style="margin-bottom:16px;">Melee Size Limits &amp; Class Restrictions</h3>
+  <div style="overflow-x:auto;">
+    <table class="ability-table">
+      <thead><tr><th>Class</th><th>Melee</th><th>Ranged</th><th>Special</th></tr></thead>
+      <tbody>
+        <tr><td>Steel Jaw</td><td>Any melee (no swords); heavy weapons ✓</td><td>Any except long rifles</td><td>No dual wield</td></tr>
+        <tr><td>Iron Titan</td><td>Any melee (no swords); heavy weapons ✓; shields ✓</td><td>Any except long rifles</td><td>No dual wield</td></tr>
+        <tr><td>Street Shadow</td><td>Swords (exclusive) + any non-heavy melee</td><td>Pistols and SMGs only</td><td>Ability-based dual wield melee</td></tr>
+        <tr><td>Lead Slinger</td><td>Standard (≤42" or dagger)</td><td>All types including long rifle &amp; shotgun</td><td>Ability-based pistol dual wield</td></tr>
+        <tr><td>Giga Wraith</td><td>Daggers ≤18" only, no dual wield</td><td>Pistols and SMGs, no dual wield</td><td>TekDek required for meatspace hacks</td></tr>
+        <tr><td>Blitz Geist</td><td>Daggers ≤18" only, no dual wield</td><td>Pistols and SMGs, no dual wield</td><td>TekDek required for meatspace hacks</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 6: SAFETY ══════════════ -->
+<section id="safety">
+  <div class="section-header"><span class="section-number">06</span><h2>Safety <span class="glow">Protocols</span></h2><div class="section-line"></div></div>
+  <div class="card-grid">
+    <div class="card"><h3>Eye Protection</h3><p>Mandatory at all times in any "weapons free" area. Must be at minimum <strong>wraparound</strong> style. May only be removed in designated sanctuary/weapons-down zones.</p></div>
+    <div class="card magenta"><h3>Trigger Discipline</h3><p>Maintain proper trigger discipline at all times. Discharging a weapon within a weapons-down zone — intentional or negligent — results in immediate corrective action with in-play and potentially out-of-play consequences.</p></div>
+    <div class="card yellow"><h3>Cover &amp; Blind Firing</h3><p>When firing from behind cover, always <strong>present a legal target</strong>. Do not blind fire or peek only your head. If you're going to lean out — lean out properly.</p></div>
+    <div class="card"><h3>Physical Contact</h3><p>Requires verbal consent: <strong>"Physical Roleplay — may I [X]?"</strong> Recipient must respond <strong>"I Accept."</strong> Grappling, wrestling, or striking in combat is strictly forbidden.</p></div>
+    <div class="card magenta"><h3>Age &amp; Conduct</h3><p>Players must be <strong>18+ with valid ID</strong> at first check-in. Alcohol, drugs, and intoxicating substances are strictly forbidden on-site at any time.</p></div>
+    <div class="card yellow"><h3>Weapon Physrep Rules</h3><p>All weapon physreps must be painted to eliminate garish colors and logos. Orange barrels may remain unpainted. Melee physreps must match their real-world counterpart aesthetically — no basic boffer sticks.</p></div>
+    <div class="card"><h3>Theft Policy</h3><p>Stealing any out-of-play item is strictly forbidden. In-play theft requires a marshal present; the physrep is turned over to the marshal and replaced with a card.<div class="callout warn" style="margin-top:12px;font-size:13px;padding:12px 16px;"><span class="callout-label">// note</span>In-play theft from allies violates gang culture and invites in-play disciplinary action.</div></p></div>
+    <div class="card green"><h3>Emotional Safety</h3><p>Cross index and middle fingers over the heart to exit a scene silently. Say <strong>"Infirmary"</strong> to a marshal — no questions asked, no consequences. Emotional safety staff are available at all events.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════ SECTION 7: TAGLINES ══════════════ -->
+<section id="taglines">
+  <div class="section-header"><span class="section-number">07</span><h2>Combat <span class="glow">Taglines</span></h2><div class="section-line"></div></div>
+  <p style="margin-bottom:28px;max-width:720px;">Taglines are verbal calls that modify basic combat. <strong>Splash [#]</strong> = area-of-effect radius in feet. <strong>Pure</strong> bypasses all barriers and armor.</p>
+  <div class="tagline-grid">
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Full</div><div class="tagline-desc">Target takes 1 point of damage to every body zone simultaneously.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Shred</div><div class="tagline-desc">Like Full, but delivered via melee. Strips all zones at once with a weapon strike.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Splash [#]</div><div class="tagline-desc">Area-of-effect. All targets within the stated foot radius are affected by the following tagline.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Boom</div><div class="tagline-desc">Explosion effect. Destroys cover objects and structures it strikes. Typically delivered with Splash.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Ignite</div><div class="tagline-desc">Target is set on fire. Must be fully actrepped — screaming, dropping, arm-waving.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Concuss</div><div class="tagline-desc">Target is stunned by percussive force. Must actrep disorientation and stagger.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Knockout</div><div class="tagline-desc">Target is rendered immediately unconscious and must drop to INCAP state.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Knockdown / Knockback</div><div class="tagline-desc">Target knocked to the ground (Knockdown) or pushed back several feet (Knockback). Must actrep.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Disarm</div><div class="tagline-desc">Target must drop their currently held weapon. Item goes to ground.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Blind</div><div class="tagline-desc">Target must close their eyes and actrep blindness. Duration as specified by ability.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Mute</div><div class="tagline-desc">Target cannot speak or vocalize for the duration. Cannot use abilities that require calling out.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Silence</div><div class="tagline-desc">Target cannot use any abilities or skills for 5 seconds. Base weapons and movement only.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Pure</div><div class="tagline-desc">Bypasses all barriers and armor points. Hits zones directly. Hardest damage type to defend against.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Restore</div><div class="tagline-desc">Reverses damage on a targeted zone, restoring it to normal function. Can also restore broken objects.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Resist</div><div class="tagline-desc">All-purpose defensive negation. The intended attack or effect is completely nullified.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Break</div><div class="tagline-desc">Renders physical items (weapons, shields, doors, cover) inoperative. Also cancels active status taglines.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Execute</div><div class="tagline-desc">Moves a downed target (wounded torso) immediately to INCAP. Requires point-blank stance with both feet planted. Melee = 3-second count.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Death</div><div class="tagline-desc">Target goes immediately to COLD state. Bypasses all stages of damage and bleed. Rare, high-cost ability.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Devastate</div><div class="tagline-desc">Target immediately takes 6 points of damage to all zones. Cover and objects are destroyed as with Break.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Corrode</div><div class="tagline-desc">A specialized damage effect delivered via blade or bullet. Used by Venom gang members at level 4.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Shock</div><div class="tagline-desc">Electrical damage effect used by Vesper netrunners. Actrep convulsions/electrical impact.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Overdrive</div><div class="tagline-desc">Steeljaw-exclusive. An incredibly fast attack — lands 2 damage before modifiers on one target.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Armor Piercing / Piercing</div><div class="tagline-desc">Bypasses Armor or AP. Does not bypass barriers. Can be resisted by skills.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Reveal</div><div class="tagline-desc">Cancels all stealth within the given radius. Affected players cannot re-enter stealth for 10 seconds.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Compel</div><div class="tagline-desc">Control a target's cyberware. Commands: "Stop," "Run away," or "Fight your friends." Cannot target enemies in Netspace.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-magenta);"><div class="tagline-name">Indicate</div><div class="tagline-desc">A non-line-of-sight attack (ricochet, remote hack, etc.). Marshal-mediated.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-yellow);"><div class="tagline-name">Clank</div><div class="tagline-desc">Indicates armor absorbing damage. Used by Iron Titans with shields or units with Armor abilities.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-green);"><div class="tagline-name">Incoming</div><div class="tagline-desc">Marshal-use only. Warns of heavy ordnance — falling bombs, distant artillery. Environmental hazards follow.</div></div>
+    <div class="tagline-item" style="border-color:var(--neon-cyan);"><div class="tagline-name">Backlash</div><div class="tagline-desc">NPC-use only. Indicate-type tagline for anyone backpacking. The backpacker takes the effect; the meatspace ally does not.</div></div>
+  </div>
+  <div class="callout tip" style="margin-top:28px;"><span class="callout-label">// reminder</span>Basic attacks (1 hit = 1 damage) require NO verbal call. Taglines are only spoken when activating a special ability or modified effect. Keep the field clean and calls clear.</div>
+</section>
+
+</main>
+
+<footer>
+  <p>V LARP · Player Mechanics Reference · Beta Edition · All rights reserved by V LARP Staff</p>
+  <p style="margin-top:8px;opacity:0.4;">// in the neon dark, the gangs remember //</p>
+</footer>
+
+</body>
+</html>
