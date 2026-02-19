@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOMAD — Rulebook Beta</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cyan: #00f0ff;
+  --magenta: #ff00c8;
+  --yellow: #ffe600;
+  --red: #ff3040;
+  --green: #39ff14;
+  --orange: #ff6a00;
+  --bg-dark: #0a0a12;
+  --bg-panel: #0d0d1a;
+  --bg-card: #111126;
+  --border: #1a1a3a;
+  --text: #c8c8e0;
+  --text-dim: #6a6a8a;
+  --glow-cyan: 0 0 10px rgba(0,240,255,0.5), 0 0 30px rgba(0,240,255,0.2);
+  --glow-magenta: 0 0 10px rgba(255,0,200,0.5), 0 0 30px rgba(255,0,200,0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  background: var(--bg-dark);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* SCANLINE OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
+
+/* ===== NAVIGATION ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,18,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,240,255,0.15);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav .logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: 6px;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+}
+nav .logo span { color: var(--magenta); text-shadow: var(--glow-magenta); }
+.nav-links {
+  display: flex;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 75%;
+}
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.nav-links a:hover {
+  color: var(--cyan);
+  border-color: rgba(0,240,255,0.3);
+  background: rgba(0,240,255,0.05);
+}
+
+/* MOBILE NAV */
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--cyan); margin: 5px 0; transition: 0.3s; }
+@media(max-width: 900px) {
+  .hamburger { display: block; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: rgba(10,10,18,0.97);
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,240,255,0.15);
+    max-width: 100%;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 0.6rem 1rem; font-size: 0.8rem; }
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0,240,255,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(255,0,200,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(255,230,0,0.04) 0%, transparent 40%);
+}
+.hero-grid {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  perspective: 500px;
+  transform: rotateX(40deg);
+  transform-origin: center bottom;
+  opacity: 0.5;
+}
+.hero-content { position: relative; z-index: 2; }
+.hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  letter-spacing: 16px;
+  color: #fff;
+  text-shadow: 0 0 40px rgba(0,240,255,0.6), 0 0 80px rgba(0,240,255,0.3);
+  animation: glitch-title 8s infinite;
+  margin-bottom: 0.5rem;
+}
+.hero .subtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.8rem, 2vw, 1.1rem);
+  color: var(--magenta);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  text-shadow: var(--glow-magenta);
+}
+.hero .tagline {
+  max-width: 600px;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+.hero .version-badge {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 0.4rem 1.5rem;
+  border: 1px solid rgba(0,240,255,0.3);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(0,240,255,0.3);
+  border-radius: 12px;
+  z-index: 2;
+}
+.scroll-indicator::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 8px;
+  background: var(--cyan);
+  border-radius: 2px;
+  animation: scroll-dot 2s infinite;
+}
+
+@keyframes scroll-dot {
+  0%, 100% { opacity: 1; top: 6px; }
+  50% { opacity: 0.3; top: 20px; }
+}
+@keyframes glitch-title {
+  0%, 93%, 100% { text-shadow: 0 0 40px rgba(0,240,255,0.6), 0 0 80px rgba(0,240,255,0.3); }
+  94% { text-shadow: -3px 0 var(--magenta), 3px 0 var(--cyan); }
+  95% { text-shadow: 3px 0 var(--magenta), -3px 0 var(--cyan); }
+  96% { text-shadow: 0 0 40px rgba(0,240,255,0.6), 0 0 80px rgba(0,240,255,0.3); }
+}
+
+/* ===== LAYOUT ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ===== CHAPTERS ===== */
+.chapter {
+  padding: 5rem 0 3rem;
+  border-top: 1px solid var(--border);
+}
+.chapter-header {
+  margin-bottom: 3rem;
+  position: relative;
+}
+.chapter-number {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  margin-bottom: 0.5rem;
+}
+.chapter-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: #fff;
+  letter-spacing: 3px;
+  line-height: 1.2;
+}
+.chapter-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta));
+  margin-top: 1rem;
+  box-shadow: 0 0 10px rgba(0,240,255,0.4);
+}
+
+/* ===== SECTIONS ===== */
+.section { margin-bottom: 3rem; }
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0,240,255,0.1);
+}
+.subsection-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--magenta);
+  letter-spacing: 1px;
+  margin: 1.5rem 0 0.75rem;
+}
+
+p { margin-bottom: 1rem; }
+
+/* ===== PANELS / CARDS ===== */
+.info-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--cyan);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+  position: relative;
+}
+.info-panel.warning {
+  border-left-color: var(--yellow);
+}
+.info-panel.danger {
+  border-left-color: var(--red);
+}
+.info-panel.success {
+  border-left-color: var(--green);
+}
+.info-panel .panel-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.info-panel.warning .panel-label { color: var(--yellow); }
+.info-panel.danger .panel-label { color: var(--red); }
+.info-panel.success .panel-label { color: var(--green); }
+
+/* ===== STAT BLOCKS ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  text-align: center;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta));
+}
+.stat-box .stat-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+}
+.stat-box .stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+/* ===== TABLES ===== */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+thead th {
+  background: rgba(0,240,255,0.08);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid rgba(0,240,255,0.2);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tbody tr:hover {
+  background: rgba(0,240,255,0.03);
+}
+tbody tr:nth-child(even) {
+  background: rgba(0,0,0,0.15);
+}
+
+/* ===== FACTION CARDS ===== */
+.faction-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+.faction-header {
+  padding: 1.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.faction-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.1;
+}
+.faction-header.uc { background: linear-gradient(135deg, rgba(255,50,50,0.15), rgba(255,200,0,0.08)); border-left: 4px solid #ff3232; }
+.faction-header.sentinel { background: linear-gradient(135deg, rgba(30,100,255,0.15), rgba(100,150,255,0.08)); border-left: 4px solid #3070ff; }
+.faction-header.cressian { background: linear-gradient(135deg, rgba(0,200,100,0.15), rgba(100,255,150,0.08)); border-left: 4px solid #00c864; }
+.faction-header.knights { background: linear-gradient(135deg, rgba(200,150,50,0.15), rgba(255,200,100,0.08)); border-left: 4px solid #c89632; }
+.faction-header.mantis { background: linear-gradient(135deg, rgba(0,200,0,0.15), rgba(0,100,0,0.08)); border-left: 4px solid #00c800; }
+
+.faction-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #fff;
+  letter-spacing: 2px;
+}
+.faction-body { padding: 1.5rem 2rem; }
+.faction-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.faction-stat {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(0,0,0,0.3);
+}
+.faction-stat .val-pos { color: var(--green); }
+.faction-stat .val-neg { color: var(--red); }
+.faction-stat .val-zero { color: var(--text-dim); }
+
+.agenda-box {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+.agenda-box .agenda-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 0.5rem;
+}
+.agenda-box ul {
+  list-style: none;
+  padding: 0;
+}
+.agenda-box li {
+  padding: 0.3rem 0;
+  padding-left: 1.2rem;
+  position: relative;
+  font-size: 0.9rem;
+}
+.agenda-box li::before {
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: var(--yellow);
+}
+
+/* ===== CLASS CARDS ===== */
+.class-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+}
+.class-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.class-category-tag {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+.cat-combat { background: rgba(255,48,64,0.15); color: var(--red); border: 1px solid rgba(255,48,64,0.3); }
+.cat-support { background: rgba(0,240,255,0.1); color: var(--cyan); border: 1px solid rgba(0,240,255,0.25); }
+.cat-frontier { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid rgba(57,255,20,0.25); }
+.cat-social { background: rgba(255,0,200,0.1); color: var(--magenta); border: 1px solid rgba(255,0,200,0.25); }
+
+.path-tag {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  color: var(--text-dim);
+}
+
+/* SKILL TABLE INSIDE CLASS */
+.skill-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+.skill-table th {
+  background: rgba(0,240,255,0.06);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,240,255,0.15);
+}
+.skill-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.skill-table .skill-name {
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+.skill-table .rank-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--magenta);
+  white-space: nowrap;
+}
+
+/* HEROIC ACTION BOX */
+.heroic-action {
+  background: linear-gradient(135deg, rgba(255,230,0,0.06), rgba(255,106,0,0.04));
+  border: 1px solid rgba(255,230,0,0.2);
+  border-left: 3px solid var(--yellow);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+}
+.heroic-action .heroic-label {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 0.25rem;
+}
+.heroic-action .heroic-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.collapsible {
+  margin: 1rem 0;
+}
+.collapsible-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(0,240,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+}
+.collapsible-toggle:hover {
+  background: rgba(0,240,255,0.08);
+  border-color: rgba(0,240,255,0.3);
+}
+.collapsible-toggle .arrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--cyan);
+  transition: transform 0.3s;
+}
+.collapsible-toggle.active .arrow { transform: rotate(90deg); }
+.collapsible-content {
+  display: none;
+  padding: 1rem 0;
+}
+.collapsible-content.show { display: block; }
+
+/* ===== EFFECT TAGS ===== */
+.tag {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin: 0.15rem;
+  white-space: nowrap;
+}
+.tag-fire { background: rgba(255,48,64,0.15); color: var(--red); border: 1px solid rgba(255,48,64,0.3); }
+.tag-frost { background: rgba(30,100,255,0.15); color: #4090ff; border: 1px solid rgba(30,100,255,0.3); }
+.tag-acid { background: rgba(57,255,20,0.1); color: var(--green); border: 1px solid rgba(57,255,20,0.25); }
+.tag-lightning { background: rgba(255,230,0,0.1); color: var(--yellow); border: 1px solid rgba(255,230,0,0.25); }
+.tag-body { background: rgba(255,0,200,0.1); color: var(--magenta); border: 1px solid rgba(255,0,200,0.25); }
+.tag-ion { background: rgba(0,240,255,0.1); color: var(--cyan); border: 1px solid rgba(0,240,255,0.25); }
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(0,240,255,0.3);
+  background: rgba(10,10,18,0.9);
+  color: var(--cyan);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 100;
+}
+.back-to-top.visible { opacity: 1; }
+.back-to-top:hover { background: rgba(0,240,255,0.1); }
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem;
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+footer .footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  margin-bottom: 0.5rem;
+}
+
+/* ===== UTILITIES ===== */
+.text-cyan { color: var(--cyan); }
+.text-magenta { color: var(--magenta); }
+.text-yellow { color: var(--yellow); }
+.text-red { color: var(--red); }
+.text-green { color: var(--green); }
+.text-white { color: #fff; }
+.font-mono { font-family: 'Share Tech Mono', monospace; }
+.font-orbit { font-family: 'Orbitron', sans-serif; }
+strong { color: #e0e0f0; font-weight: 600; }
+em { color: var(--cyan); font-style: normal; font-weight: 500; }
+
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 2rem 0;
+}
+
+.columns-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media(max-width: 600px) {
+  .container { padding: 0 1rem; }
+  .faction-body, .faction-header { padding: 1rem; }
+  .class-block { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="logo">NOMAD<span>.</span></div>
+  <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="#ch1">Basics</a>
+    <a href="#ch2">Creation</a>
+    <a href="#ch3">Factions</a>
+    <a href="#ch4">Classes</a>
+    <a href="#ch5">Combat</a>
+    <a href="#ch6">Frontier</a>
+    <a href="#ch7">Skullduggery</a>
+    <a href="#ch8">OOP</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <h1>NOMAD</h1>
+    <div class="subtitle">Live-Action Roleplaying Game // 27th Century</div>
+    <p class="tagline">Set on the newly colonized frontier world of Cressida, multiple factions wage covert and overt war for dominance. Choose your allegiance. Forge your legend.</p>
+    <div class="version-badge">Rulebook — Beta Edition</div>
+  </div>
+  <div class="scroll-indicator"></div>
+</section>
+
+<div class="container">
+
+<!-- ================================================================ -->
+<!-- CHAPTER 1: BASICS -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch1">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 01</div>
+    <h2 class="chapter-title">Basics</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Setting</h3>
+    <p>Set in the 27th century, Nomad is a science fiction LARP that explores concepts such as war, imperialism, and corporatism. Multiple factions exist with a vested interest in <strong>Cressida</strong>, a newly colonized world in which Nomad takes place. Several of these factions are in covert—and sometimes overt—conflict with each other, using Cressida as a staging ground to settle their disputes.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Player Characters</h3>
+    <p>Every player portrays the role of a <strong>Player Character (PC)</strong>. These characters are new settlers or residents of Cressida and are representatives of a faction. When a player creates their character, they choose a faction for that character to be a part of, and a class that determines their skills and abilities.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">What to Expect</h3>
+    <p>Nomad is a simulated combat LARP usually played in either a single day or weekend format and is a <strong>Full Immersion</strong> experience, where Player Characters and Non-Player Characters are expected to have setting-appropriate costuming and behavior.</p>
+    <p>Over the course of an event, a player will arrive on site and check in with the Logistics Team, where they receive their character sheet and are assigned an NPC shift. After Sign-In, a player should claim sleeping space (if applicable), change into character costuming and gather any appropriate <strong>Physreps</strong> (Physical Representation—an item that represents an in-game object). At a designated time, Opening Announcements will be held, followed by Game On, when all players are considered to be "In-Character." At the end of the event, Game Off will be called, followed by closing announcements and site cleanup.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Safety</h3>
+    <p>Safety is of chief importance at Nomad. Nomad is a <strong>"lightest touch"</strong> combat game, meaning that combat strikes are expected to be made with the lightest force needed to be felt, and may only be made with approved foam weaponry. Protective, shatterproof eyewear is required to participate.</p>
+
+    <div class="info-panel danger">
+      <div class="panel-label">Safety Calls</div>
+      <p><strong class="text-red">HOLD</strong> — A pause in action. Stand still, repeat "Hold!" loudly, and await instructions. May be called by anyone for any reason, including unsafe conditions.</p>
+      <p><strong class="text-red">MEDIC</strong> — Signals a need for real-life medical attention. Treat like a Hold. Only use for suspected actual injury.</p>
+    </div>
+
+    <div class="info-panel warning">
+      <div class="panel-label">Non-Combat Designation</div>
+      <p>A player may be designated <strong>Non-Combat</strong>, represented by wearing a bright orange headband. These players may not be engaged in physical combat roleplay. An attacking character may gesture at them once per second and declare an attack or effect instead. They may respond using defensive skills as normal.</p>
+    </div>
+
+    <p>Social safety is paramount at Nomad events. Any discrimination based on Race, Gender Identity, Sexuality, Religion or Disability will not be tolerated. Physical touch without express consent is prohibited. Out-of-play aggression or intimidation will not be tolerated. Anonymous and non-anonymous reporting is available.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">NPC Shift</h3>
+    <p>Each event, players perform a Non-Player Character shift, portraying characters necessary for plot and story. Shifts are typically 2 hours for single-day events or 4 hours for multi-day events. Player preferences regarding type of roleplay (combat, social, etc.) will be kept in consideration, and any disability needs will be reasonably accommodated. A limited number of Opt-Out tickets are available.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Basic Stats</h3>
+    <p>Every character has four main stats that represent their physical health, personal skill, and fiscal influence:</p>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Health Points</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Skill Points</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Resource Points</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Shock</div>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Health Points</div>
+      <p>A measure of how hardy a character is. When reduced to zero, a character enters <strong>Bleedout</strong> for five minutes. During bleedout, a character cannot stand or move faster than a slow crawl. When <strong>Stable</strong>, a character is at zero HP and cannot attack—any damage sends them back into Bleedout. Every re-entry to Bleedout from Stable reduces the timer by one minute (minimum one minute).</p>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Skill Points</div>
+      <p>Used to activate skills and abilities. Resets every quarter (0600, 1200, 1800, 0000).</p>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Resource Points</div>
+      <p>Used in the production of items. Refreshes every day at midnight.</p>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Shock</div>
+      <p>Measures the number of times a character can be reconstructed via backup clones. When a Bleedout timer expires, Shock drops by 1. The character enters a dead state for 5–15 minutes, then respawns with 1 HP at a designated respawn area after an additional 10 minutes.</p>
+    </div>
+
+    <div class="info-panel success">
+      <div class="panel-label">Armor & Shield Points</div>
+      <p><strong>Armor Points</strong> are temporary HP from wearing armor, depleted before standard HP. They do not regenerate until the armor is repaired.</p>
+      <p><strong>Shield Points</strong> are temporary HP from energy shields, always depleted first. To recharge, take a knee, state "Recharging Shields" and remain immobile for 15 seconds. Every shield has a corresponding LED color that must be worn.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Attacks</h3>
+    <p>When making an attack, declare the damage amount and any taglines unless the damage is 1 with no tagline. Defenders have 3 seconds to respond with a defensive effect. Attacks cannot target the head, hands, feet, or groin. After 3 consecutive melee attacks, the attacker must pause for 1 second. Characters may carry 50 rounds of ammunition at a time unless modified by skills or items.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Progression</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Games Played</th><th>XP Per Game</th></tr></thead>
+        <tbody>
+          <tr><td>1–12</td><td class="text-cyan">15</td></tr>
+          <tr><td>13–24</td><td class="text-cyan">12</td></tr>
+          <tr><td>25–36</td><td class="text-cyan">6</td></tr>
+          <tr><td>37–48</td><td class="text-cyan">3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>At <strong>99 XP spent</strong>, choose a second path. At <strong>190 XP spent</strong>, choose a third. If the path is outside current classes, gain access to Core Skills of that class. At <strong>450 earned XP</strong>, a character banks 3 XP per game for a replacement character.</p>
+
+    <h4 class="subsection-title">Heroic Actions</h4>
+    <p>Incredibly potent class-defining skills (one per class, Tier 5). Available at <strong>125 spent XP</strong> (1st), <strong>250</strong> (2nd), and <strong>375</strong> (3rd). Learning a Heroic Action outside your starting class costs +6 XP, and outside your starting category costs +12 XP.</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 2: CHARACTER CREATION -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch2">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 02</div>
+    <h2 class="chapter-title">Character Creation</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Concepts</h3>
+    <p>Every character should begin with an idea: <em>Down On Their Luck Space Captain</em>, <em>Anti-Corporate Saboteur</em>, or <em>Skilled Executive Protector</em>. Think about backstory elements as you read through the rules, considering what sort of story they will enable you to tell.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Steps</h3>
+    <p>1. <strong>Choose a Faction and Sub-faction</strong> — Determines base stats, training benefits, social group, and story role.</p>
+    <p>2. <strong>Choose a Class and Path</strong> — Templates that specialize your skills and abilities.</p>
+    <p>3. <strong>Spend Starting 18 XP</strong> — Purchase skills and stats according to the XP cost table.</p>
+    <p>4. <strong>Choose a Loadout</strong> — Starting equipment.</p>
+
+    <div class="info-panel warning">
+      <div class="panel-label">Militant Factions</div>
+      <p>Some sub-factions are militant, acting as an opt-in for combat PvP. By choosing a militant faction, a player agrees that other characters may engage them in combat. Marshals are still required for PvP, and any character death requires the initiating character to check-in with the other party.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">XP Cost Table</h3>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>In-Class</th><th>In-Category</th><th>Other</th><th>Health</th><th>Skill</th><th>Resource</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td class="text-cyan">3</td><td>6</td><td>9</td><td>3</td><td>6</td><td>9</td></tr>
+          <tr><td>2</td><td class="text-cyan">6</td><td>—</td><td>—</td><td colspan="3" class="text-dim"></td></tr>
+          <tr><td>3</td><td class="text-cyan">9</td><td>—</td><td>—</td><td colspan="3"></td></tr>
+          <tr><td>4</td><td class="text-cyan">12</td><td>—</td><td>—</td><td colspan="3"></td></tr>
+          <tr><td>5</td><td class="text-cyan">15</td><td>—</td><td>—</td><td colspan="3"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>To purchase skills of a higher tier, you must have at least as many skills in a lower tier of that same path. Additionally, only 3 Aptitude skills may be learned (cost: 3 XP each, no teacher required).</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Loadout</h3>
+    <p>A starting loadout consists of: a Tier 1 primary weapon, a Tier 1 secondary weapon or physical shield, a Tier 1 energy shield, Tier 1 armor (unless faction-provided), a Tier 1 homestead item or convoy job, and a Medisol Syringe.</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 3: FACTIONS -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch3">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 03</div>
+    <h2 class="chapter-title">Factions</h2>
+  </div>
+
+  <p>Every character belongs to a Faction. When a Subfaction is chosen, Base Stats (5/5/5/5) are modified by the subfaction's stat modifiers. Subfactions grant Training Benefits (learned automatically), and at games 3, 6, 9, 12, 18, and 24, a character gains a Faction or Subfaction benefit—or may instead gain a rank.</p>
+
+  <!-- UNITED COALITION -->
+  <div class="faction-card">
+    <div class="faction-header uc">
+      <div class="faction-name">United Coalition</div>
+    </div>
+    <div class="faction-body">
+      <p>After humanity fled Old Earth, they terraformed and settled Imperium. As the Coalition grew, the <strong>Starforge</strong>—a massive training facility—was built to create elite colonists known as the <strong>Starforged</strong>. They are the first "official" colonists on Cressida, backed by the full weight of the United Coalition of Planets.</p>
+
+      <!-- Starforge Colonist -->
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Starforge Colonist <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+2 SK+3 RS-2</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Rigorous training and aptitude allow them to stand out. Their intense cohesion leads to a socialistic internal structure, pooling resources among themselves. <strong>Tolerance: Moderate.</strong></p>
+          <div class="agenda-box">
+            <div class="agenda-label">Agenda</div>
+            <ul>
+              <li>Colonize Cressida and gather its mineral wealth for the Coalition</li>
+              <li>Oppose Corporate Interests</li>
+              <li>Work to advance the Colony</li>
+            </ul>
+          </div>
+          <h4 class="subsection-title">Training Benefit: Starforge Survivalist Training</h4>
+          <p>Learn one additional Aptitude skill. Additionally, once per day, the first Homestead, Tradeswright, or Ridgerunner skill that spends Resource Points costs 1 less RP.</p>
+          <h4 class="subsection-title">Faction & Subfaction Benefits</h4>
+          <div class="table-wrapper">
+            <table class="skill-table">
+              <thead><tr><th>Type</th><th>Name</th><th>Effect</th></tr></thead>
+              <tbody>
+                <tr><td>Faction</td><td class="skill-name">Rations</td><td>Once per game, gain 6 Starforge Ration meal items.</td></tr>
+                <tr><td>Faction</td><td class="skill-name">Bushcraft</td><td>Once per day, spend 1 RP to gain 1 Crude Wood and 1 Tier 1 Organic Material.</td></tr>
+                <tr><td>Faction</td><td class="skill-name">Community Aid</td><td>When using a Homestead Item, create 1 additional Currency for the Coalition Communal Fund.</td></tr>
+                <tr><td>Subfaction</td><td class="skill-name">Medicinal Plants</td><td>Spend 1 RP to gain Dogwood Healing Salve, Oak Splint, or Sourwood Toxin Metabolizer.</td></tr>
+                <tr><td>Subfaction</td><td class="skill-name">Proprietary Survival Plans</td><td>Spend 1 SP to access schematics: Communal Farm, Colony Mine, Shipping Depot, or Recreational Hall.</td></tr>
+                <tr><td>Subfaction</td><td class="skill-name">Digipressed Environmental Suit</td><td>Spend 1 RP to gain U.C. Envirosuit item.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Starforge Guardian -->
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Starforge Guardian <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+4 SK+2 RS-2</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Trained for toughness and self-sustainability, Guardians act as the sword and shield of the Starforge colony. Their meritocratic hierarchy values leadership aptitude and quick thinking. <strong>Tolerance: Low.</strong></p>
+          <div class="agenda-box">
+            <div class="agenda-label">Agenda</div>
+            <ul>
+              <li>Protect the Starforged</li>
+              <li>Oppose and sabotage Corporate Interests</li>
+              <li>Work to advance the Colony</li>
+            </ul>
+          </div>
+          <h4 class="subsection-title">Training Benefit: Starforge Guardian Training</h4>
+          <p>Learn one additional Aptitude skill. When using Intercept, may target friendly characters hit by any attack type (not just ranged), and may spend 2 SP to call Intercept.</p>
+          <h4 class="subsection-title">Unique Subfaction Benefits</h4>
+          <p><strong>Martial Aid Devices</strong> — Once per quarter, spend 1 RP to digipress U.C. Quake Generator, Guardian Deflection Device, or Surplus UCRD Crowd Disperser.</p>
+          <p><strong>Shield Cell</strong> — Once per day, digipress 3 free Shield Cell items.</p>
+          <p><strong>Back In The Saddle</strong> — Once per game, spend 1 RP to digipress a KnightCo Mk3 Self Revive Unit.</p>
+        </div>
+      </div>
+
+      <!-- D.E.C. -->
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Department of Ecological Conservation <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+0 SK+1 RS+0</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Environmental protection agency and wilderness management experts. They establish parks, explore wilderness, teach survival, and investigate ecological crimes. <strong>Tolerance: Moderate.</strong></p>
+          <div class="agenda-box">
+            <div class="agenda-label">Agenda</div>
+            <ul>
+              <li>Defend the ecological wonder of Cressida</li>
+              <li>Protect Starforge Settlers</li>
+              <li>Disrupt actions from Sentinel and Independents that might harm the planet</li>
+            </ul>
+          </div>
+          <h4 class="subsection-title">Training Benefit: D.E.C. Training</h4>
+          <p>Learn one additional Aptitude skill. Once per game, place "trail tags" at two locations—characters may spend 1 SP to travel between them OOP for one hour. Begin with Zoology, Botany, or Survivalism Field of Study.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENTINEL -->
+  <div class="faction-card">
+    <div class="faction-header sentinel">
+      <div class="faction-name">Sentinel</div>
+    </div>
+    <div class="faction-body">
+      <p>The largest mediation company on Frelsi, at the forefront of security technology and training. They are preparing for open war with the Coalition while striking from the shadows. What they lack in numbers, they make up for in training, technology, and intelligence.</p>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Sentinel Security Division <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+1 SK+2 RS-1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>The second largest standing military in the system. Known for professionalism, talent, and training. Fighting a covert war with the UCP. <strong>Tolerance: Low.</strong></p>
+          <h4 class="subsection-title">Training: Boot Camp</h4>
+          <p>Learn two from: Basic Heavy Weapon Expertise, Headshot, Aimed Shot, Tactical Reload, Fan The Hammer, Power Armor Proficiency, or Sniper's Nest. Until learned, use a Tier 1-2 Sharpshooter skill without SP once per half day. Begin with Basic Ranged Proficiency.</p>
+          <h4 class="subsection-title">Key Benefits</h4>
+          <p><strong>Salary</strong> — Gain 10 currency/game, spend up to 3 RP for 5 currency each. <strong>Raid Gear</strong> — Spend 1 SP for +5 Temp Armor (can extend to allies). <strong>Technological Superiority</strong> — Once per quarter, 1 RP for Diagnostics Array, Sonar Beacon, or Hologram Displacement Device.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Foregardian Institute <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP-3 SK+1 RS+1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Scientific think-tank closely tied to Sentinel. Field researchers in geology, sociology, biology, and archaeology. Acts as a friendly face of Frelsian commercial interests. <strong>Tolerance: Medium.</strong></p>
+          <h4 class="subsection-title">Training: Explorer Training</h4>
+          <p>Learn one skill each from Sharpshooter and Scholar lists. Begin with one Field of Study of choice.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Sentinel Arbiters <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+0 SK-2 RS+2</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Police officers and legal counsel, handling investigation, undercover work, and legal representation. Greater social finesse than other Sentinel subfactions. <strong>Tolerance: Moderate.</strong></p>
+          <h4 class="subsection-title">Training: Arbitration Training</h4>
+          <p>Learn from combat and investigation skill lists. Begin with Field of Study: Law. Extra Forensic Science uses per half-day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRESSIAN INDEPENDENTS -->
+  <div class="faction-card">
+    <div class="faction-header cressian">
+      <div class="faction-name">Cressian Independents</div>
+    </div>
+    <div class="faction-body">
+      <p>Settlers who wish to live free from foreign rule, bitter towards the U.C.P. and distrustful of corporate interests. Run the gamut from outright hostile to outsiders at worst, to distrustful at best.</p>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Steelheart Insurrectionists <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+3 SK+1 RS-1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>A revolutionary movement born from student riots against wealth inequality. Openly claiming membership is a prison sentence on many UCP worlds. Fast, strong, and ruthless. <strong>Tolerance: High.</strong></p>
+          <h4 class="subsection-title">Training: Forged In Insurrection</h4>
+          <p>Learn from Striker and Spy skill lists. Once per quarter, spend 1 SP to ignore bleedout for 3 minutes.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>The Cyrell Movement <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP-2 SK+2 RS+0</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>View augmentation and improvement of the human body as art and expression, carrying the practice to logical extremes. Cyberpunk aesthetic. <strong>Tolerance: High.</strong></p>
+          <h4 class="subsection-title">Training: Augmented</h4>
+          <p>Start with one Tier 1 augment. First two T1 augments don't decrease stats. Can craft and install T1 augments. Once per quarter, spend 1 SP to ignore bleedout for 3 minutes.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Vanguard Nation <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP-1 SK+0 RS+1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Once rag-tag road clans, now among the greatest traders, cavaliers, and smugglers in the galaxy. They live in the saddle and fight for freedom of movement and trade. <strong>Tolerance: Moderate.</strong></p>
+          <h4 class="subsection-title">Training: Born To Ride</h4>
+          <p>Once per day, spend 1 RP to transport yourself plus passengers to faction HQ (5 min). Begin with Field of Study: Travel and a T1 Vehicle. Once per quarter, ignore bleedout for 3 minutes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TALON COMPACT -->
+  <div class="faction-card">
+    <div class="faction-header" style="background: linear-gradient(135deg, rgba(150,100,50,0.15), rgba(100,80,40,0.08)); border-left: 4px solid #96643c;">
+      <div class="faction-name">Talon Compact</div>
+    </div>
+    <div class="faction-body">
+      <p>Mercenaries who trade violence for credits. The Compact offers bounty hunting, private protection, and fielding small armies. A deep thread of pragmatism accompanies their way of life.</p>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Hunters <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+1 SK+2 RS-1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Specialize in especially dangerous jobs—tracking criminals, high-threat security, deep wetwork. <strong>Tolerance: Low.</strong></p>
+          <h4 class="subsection-title">Training: Ambusher</h4>
+          <p>Learn Basic Trap Expertise plus one from: Aimed Shot, Killing Spree, Sneak Attack, Stalk. May spend 2 SP to Deny and counter with a Silence attack.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Searswrights <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+0 SK-2 RS+2</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Masterful tradespeople and logisticians providing weapons, armor, ammunition, and everything needed to maintain a fighting force. <strong>Tolerance: Moderate.</strong></p>
+          <h4 class="subsection-title">Training: Searswright Specialization</h4>
+          <p>Choose a category of items or expedition type to work at one rank higher. Begin with Financial Backing and Resourceful for free.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Whispers <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+1 SK+2 RS-1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Specialize in contracts requiring social grace, deception, or stealth. The Whispers do not formally exist within the Compact. Anonymity is their greatest weapon. <strong>Tolerance: Low.</strong></p>
+          <h4 class="subsection-title">Training: Social Engineering</h4>
+          <p>Learn three skills from: Basic Poisons, Bribes In High Places, Attention, I Belong, Disguise, Informatics, or I'm In. Can Deny and counter-silence.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KNIGHTS OF ST. BROWNING -->
+  <div class="faction-card">
+    <div class="faction-header knights">
+      <div class="faction-name">Knights of St. Browning</div>
+    </div>
+    <div class="faction-body">
+      <p>A humanitarian aid group focusing on stopping human rights violations, manufacturing power armor and medicine. The Knights provide mediation and care to those who need it, regardless of belief. Power armor specialists.</p>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Field Corps <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+2 SK+0 RS+0</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Military and police of the Knights. Settle disputes and provide security. Form special bonds with their armor. <strong>Tolerance: Moderate.</strong></p>
+          <h4 class="subsection-title">Training: Field Corps Training</h4>
+          <p>May operate Knight power armor and are immune to troubleshooter abilities (lost if receiving cybernetic implants, energy shields, or Troubleshooter skills). Start with Shield of Peace or Sword of Peace power armor. When calling Intercept in power armor, cannot be brought below 1 HP by the intercepted attack.</p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Civil Corps <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP+0 SK+1 RS+0</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Legal arbitration, medical aid, engineering of infrastructure, and day-to-day maintenance. If the Field Corps is the Sword of Peace, the Civil Corps is its shield. <strong>Tolerance: Moderate.</strong></p>
+        </div>
+      </div>
+
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+          <span>Lawbringers <span class="font-mono text-cyan" style="font-size:0.75rem; margin-left:0.5rem">HP-1 SK+0 RS+1</span></span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="collapsible-content">
+          <p>Wandering judges providing justice and representation for marginalized groups. Each swears an oath of truth—breaking it means exile. Known for righteous fury when presented with damning evidence. <strong>Tolerance: Moderate.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANTIS -->
+  <div class="faction-card">
+    <div class="faction-header mantis">
+      <div class="faction-name">MANTIS</div>
+    </div>
+    <div class="faction-body">
+      <p>Filled with indignation and hatred, MANTIS works undercover to inflict terror and destabilize the status quo. Not above using any means necessary—from bioweapons to smear campaigns. Code-names from Arthurian myth.</p>
+      <div class="info-panel danger">
+        <div class="panel-label">Critical Warning</div>
+        <p>MANTIS is an <strong>"Evil" faction</strong>. All CvC is heavily moderated. If a MANTIS character is outed, they receive a <strong>permanent character death</strong>. Playing MANTIS means reduced character agency—by submitting a MANTIS character, you acknowledge this.</p>
+      </div>
+      <div class="agenda-box">
+        <div class="agenda-label">Agenda</div>
+        <ul>
+          <li>Avoid detection at all costs</li>
+          <li>Disrupt the actions of other factions</li>
+          <li>Foster instability on Cressida</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 4: CLASSES -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch4">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 04</div>
+    <h2 class="chapter-title">Classes</h2>
+  </div>
+
+  <p>Classes are organized into four categories: <span class="tag cat-combat">Combat</span> <span class="tag cat-support">Support</span> <span class="tag cat-frontier">Frontier</span> <span class="tag cat-social">Social</span>. Each class has three Paths, Core Skills, and one Heroic Action per path.</p>
+
+  <!-- STRIKER -->
+  <div class="class-block">
+    <div class="class-name">Striker</div>
+    <span class="class-category-tag cat-combat">Combat</span>
+    <div><span class="path-tag">Skirmisher</span><span class="path-tag">Centurion</span><span class="path-tag">Blitz</span></div>
+    <p>Frontline fighters who take the fight to the enemy. Skirmishers exploit weaknesses with quick blades. Centurions are heavily armored defenders. Blitzes take down entrenched and armored foes.</p>
+
+    <div class="collapsible">
+      <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+        <span>Core Skills</span><span class="arrow">▸</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="table-wrapper"><table class="skill-table">
+          <thead><tr><th>Rank</th><th>Skill</th><th>Skill</th><th>Skill</th></tr></thead>
+          <tbody>
+            <tr><td class="rank-label">R1</td><td><span class="skill-name">Basic Engage</span> — 1 SP: Dodge first 2 ranged attacks in 10s</td><td><span class="skill-name">Block</span> — 1 SP: Negate a melee attack from front (need weapon/shield)</td><td><span class="skill-name">Basic Melee Proficiency</span> — +1 melee damage (stacks)</td></tr>
+            <tr><td class="rank-label">R2</td><td><span class="skill-name">Cleave</span> — 1 SP: Melee +3 (stacks with prof)</td><td><span class="skill-name">Ambidextrous</span> — Dual-wield melee, +3 flurry cap</td><td><span class="skill-name">Int. Melee Prof.</span> — +1 melee damage (45+ XP)</td></tr>
+            <tr><td class="rank-label">R3</td><td><span class="skill-name">Adv. Cleave</span> — 2 SP: Melee +6</td><td><span class="skill-name">Shatter Weapon</span> — 2 SP: Break weapon on hit</td><td><span class="skill-name">Adv. Melee Prof.</span> — +1 melee (90+ XP)</td></tr>
+            <tr><td class="rank-label">R4</td><td><span class="skill-name">Expert Cleave</span> — 3 SP: Melee +9</td><td><span class="skill-name">Combat Ready</span> — 3×/day: Recoup SP on blocked/dodged melee</td><td><span class="skill-name">Expert Melee Prof.</span> — +1 melee (135+ XP)</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+        <span>Skirmisher Path</span><span class="arrow">▸</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="table-wrapper"><table class="skill-table">
+          <thead><tr><th>Rank</th><th>Skill</th><th>Skill</th><th>Skill</th></tr></thead>
+          <tbody>
+            <tr><td class="rank-label">R2</td><td><span class="skill-name">Adrenaline Rush</span> — +2 flurry limit for 30s</td><td><span class="skill-name">Disarm</span> — 1 SP: Melee Disarm</td><td><span class="skill-name">Fighting Stance</span> — 4 SP: 6 free uses of another melee skill</td></tr>
+            <tr><td class="rank-label">R3</td><td><span class="skill-name">Adv. Engage</span> — 2 SP: Dodge first 5 ranged in 20s</td><td><span class="skill-name">Take A Breather</span> — Use Regen Nanites; gain Unstable Nanite chip</td><td><span class="skill-name">Disengage</span> — 1 SP: Stealth for 5s, must move away</td></tr>
+            <tr><td class="rank-label">R4</td><td><span class="skill-name">Expert Engage</span> — 3 SP: Dodge first 10 ranged in 30s</td><td><span class="skill-name">Execution</span> — 2 SP: Touch bleedout target → Execute</td><td><span class="skill-name">Knockout</span> — 3 SP: Melee "Knockout, 1 min"</td></tr>
+          </tbody>
+        </table></div>
+        <div class="heroic-action">
+          <div class="heroic-label">Heroic Action</div>
+          <div class="heroic-name">Frenzy</div>
+          <p>Once/day for 60 seconds: Use Execution for free. Each Execution restores 3 SP and 3 HP.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+        <span>Centurion Path</span><span class="arrow">▸</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="table-wrapper"><table class="skill-table">
+          <thead><tr><th>Rank</th><th>Skill</th><th>Skill</th><th>Skill</th></tr></thead>
+          <tbody>
+            <tr><td class="rank-label">R2</td><td><span class="skill-name">Power Armor Prof.</span> — Use power armor</td><td><span class="skill-name">Basic Reflect</span> — 1 SP: Ignore 1-dmg ranged on shield, 10s</td><td><span class="skill-name">Take One For The Team</span> — Intercept ranged attacks on nearby allies</td></tr>
+            <tr><td class="rank-label">R3</td><td><span class="skill-name">Strong Like Mountain</span> — Immune to knockdown/push</td><td><span class="skill-name">Adv. Reflect</span> — 2 SP: Ignore ranged on shield, 10s</td><td><span class="skill-name">Shield Bash</span> — 1 SP: Knockdown (with shield, no physical strike)</td></tr>
+            <tr><td class="rank-label">R4</td><td><span class="skill-name">Earthshaker</span> — 3 SP: AOE 10 Knockdown in power armor</td><td><span class="skill-name">Expert Reflect</span> — 3 SP: Ignore ranged on shield, 20s</td><td><span class="skill-name">Hardened Shell</span> — Damage always hits Shield→Armor→HP regardless of tags</td></tr>
+          </tbody>
+        </table></div>
+        <div class="heroic-action">
+          <div class="heroic-label">Heroic Action</div>
+          <div class="heroic-name">Immovable Object</div>
+          <p>Once/half-day for 30s: Immune to taglines, ignore all 1-damage attacks, Expert Reflect active. Can always use Basic Reflect for free.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible">
+      <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+        <span>Blitz Path</span><span class="arrow">▸</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="table-wrapper"><table class="skill-table">
+          <thead><tr><th>Rank</th><th>Skill</th><th>Skill</th><th>Skill</th></tr></thead>
+          <tbody>
+            <tr><td class="rank-label">R2</td><td><span class="skill-name">Basic Tough As Nails</span> — 1 SP: +5 temp armor</td><td><span class="skill-name">Basic Berserk</span> — +1 melee below half HP</td><td><span class="skill-name">Basic Powerswing</span> — 2 SP: 10 Huge (2H melee)</td></tr>
+            <tr><td class="rank-label">R3</td><td><span class="skill-name">Adv. Tough As Nails</span> — 2 SP: +10 temp armor</td><td><span class="skill-name">Adv. Berserk</span> — +1 additional melee below half HP</td><td><span class="skill-name">Shatter Armor</span> — 2 SP: Destroy armor on hit (2H melee)</td></tr>
+            <tr><td class="rank-label">R4</td><td><span class="skill-name">Expert Tough As Nails</span> — 3 SP: +15 temp armor</td><td><span class="skill-name">No Retreat</span> — 2 SP: Target can't leave melee, 1 min</td><td><span class="skill-name">Expert Powerswing</span> — 3 SP: 15 Huge (2H melee)</td></tr>
+          </tbody>
+        </table></div>
+        <div class="heroic-action">
+          <div class="heroic-label">Heroic Action</div>
+          <div class="heroic-name">Wall of Metal</div>
+          <p>Once/quarter: 2H melee AOE 10ft auto-hit. Cannot be negated. Can combine with other Striker skills.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remaining classes with same pattern but abbreviated for brevity -->
+  <!-- SHARPSHOOTER -->
+  <div class="class-block">
+    <div class="class-name">Sharpshooter</div>
+    <span class="class-category-tag cat-combat">Combat</span>
+    <div><span class="path-tag">Gunfighter</span><span class="path-tag">Heavy</span><span class="path-tag">Sniper</span></div>
+    <p>Dangerous ranged combatants dealing death from distance. Gunfighters master the handgun. Heavies trade precision for raw firepower. Snipers achieve pinpoint accuracy at incredible range.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Core:</strong> Basic Vital Shot (1 SP: +3 ranged), Keen Eyes (1 SP: Notice stealth), Basic Ranged Proficiency (+1 ranged), scaling to Expert (+9 ranged, +4 prof, Sharp).</p>
+        <p><strong>Gunfighter Heroic — Gunboat Diplomacy:</strong> Once/half-day, 60s: When damage puts target into bleedout, restore all SP. Lose all SP at the end.</p>
+        <p><strong>Heavy Heroic — Unstoppable Force:</strong> Once/day, 30s: Immune to all damage and status effects. Allies using you as cover recharge shields in 10s.</p>
+        <p><strong>Sniper Heroic — Can't Run, Can't Hide:</strong> Once/game: Observe a character for 10 min to mark them as Prey for 1 hour. All Aimed Shot skills are free vs Prey and call Death.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERATIVE -->
+  <div class="class-block">
+    <div class="class-name">Operative</div>
+    <span class="class-category-tag cat-combat">Combat</span>
+    <div><span class="path-tag">Commando</span><span class="path-tag">Scout</span><span class="path-tag">Razor</span></div>
+    <p>Experts of stealth and subterfuge, striking quickly and quietly from the shadows. Commandos master traps and hit-and-run. Scouts specialize in recon and self-sufficiency. Razors deal silent, surgical death.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Core:</strong> Cutthroat Proficiency (+2 damage from behind/vs downed targets), Hide, Dodge line.</p>
+        <p><strong>Commando Heroic — Shadow War:</strong> Once/event, 1 min: Attacks don't break stealth. Spend 1 SP to No Effect Notice.</p>
+        <p><strong>Scout Heroic — I See All:</strong> Once/day: "By My Voice, all (Group), Notice! No Stealth, 10 min." Once/game: Perfect Dodge vs scanned target.</p>
+        <p><strong>Razor Heroic — Death Dealer:</strong> Once/half-day: Melee from behind calling "30 body, death, unavoidable."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TROUBLESHOOTER -->
+  <div class="class-block">
+    <div class="class-name">Troubleshooter</div>
+    <span class="class-category-tag cat-combat">Combat</span>
+    <div><span class="path-tag">Redliner</span><span class="path-tag">Outrunner</span><span class="path-tag">Overclocker</span></div>
+    <p>Specialists in the art of affecting neural implants—hacking, disrupting, and enhancing. Redliners disrupt enemies. Outrunners defend and buff allies. Overclockers push their own augments to the limit.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Core:</strong> Hardwired (counter troubleshooting), Shrug It Off (ignore bleedout), Ionics (packet Ion damage).</p>
+        <p><strong>Redliner Heroic — Digital Nullification:</strong> Once/half-day: "By My Voice, EMP, 1 minute."</p>
+        <p><strong>Outrunner Heroic — Coded Bulwark:</strong> Once/day: Gesture at 5 allies: "Recharge shields, No Pain, DR 3, +5 shields, 5 min!"</p>
+        <p><strong>Overclocker Heroic — Live Fast, Die Young:</strong> Once/day, 1 min: Damage immunity, +5 damage. Then 2 min bleedout, can't be healed by items or ignore bleedout.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCTOR -->
+  <div class="class-block">
+    <div class="class-name">Doctor</div>
+    <span class="class-category-tag cat-support">Support</span>
+    <div><span class="path-tag">Triage</span><span class="path-tag">Surgeon</span><span class="path-tag">Practitioner</span></div>
+    <p>Trained medical professionals in high demand. Triage excels at field medicine. Surgeons heal massive injuries. Practitioners prevent illness and cure disease.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Core:</strong> Diagnosis (learn HP/conditions), First Aid (stabilize bleedout), Fight Through The Pain (ignore bleedout 5 min).</p>
+        <p><strong>Triage Heroic — Crash Injection:</strong> Once/day: Instantly stabilize and max-heal, ignore broken limbs/disease 1hr, DR 1 for 5 min.</p>
+        <p><strong>Surgeon Heroic — Unstable Augmentation:</strong> T5 Procedures/Augments. Once/quarter: 10 min surgery for powerful buffs (reinforced dermis, radiation pretreatment, enhanced musculature, etc.)</p>
+        <p><strong>Practitioner Heroic — Plague Ward:</strong> Once/game: Declare ICU room for up to 5 patients—disease can't progress while you're present. Hourly examination.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIGISMITH -->
+  <div class="class-block">
+    <div class="class-name">Digismith</div>
+    <span class="class-category-tag cat-support">Support</span>
+    <div><span class="path-tag">Artillerist</span><span class="path-tag">Redoubt</span><span class="path-tag">Echo</span></div>
+    <p>Experts in Digipress fabrication. Artillerists create explosives and ammo. Redoubts master defensive emplacements. Echos favor gadgets and stealth.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Artillerist Heroic — Orbital Strike:</strong> Once/game: Designate a point: AOE 30, 10 Mech Hunter, or AOE 30, Damage 20.</p>
+        <p><strong>Redoubt Heroic — Digital Fortress:</strong> Once/game, 10 min: Allies in emplacement get free Block, Dodge, Hardwired, Keen Eyes.</p>
+        <p><strong>Echo Heroic — Low Visibility:</strong> Once/day: Area Smoke effect (stealth for all, no Snipe unless immune to Blind, 1 min).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADESWRIGHT -->
+  <div class="class-block">
+    <div class="class-name">Tradeswright</div>
+    <span class="class-category-tag cat-frontier">Frontier</span>
+    <div><span class="path-tag">Architect</span><span class="path-tag">Manufacturer</span><span class="path-tag">Hermeticist</span></div>
+    <p>The backbone of a settlement's economy. Architects build structures. Manufacturers create arms and armor. Hermeticists form chemical compounds from poison gas to healing nanites.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Each path's "Genius" Heroic:</strong> Spend 10 RP to create a new Schematic (with storyteller approval). Usable once every 3 games.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIDGERUNNER -->
+  <div class="class-block">
+    <div class="class-name">Ridgerunner</div>
+    <span class="class-category-tag cat-frontier">Frontier</span>
+    <div><span class="path-tag">Hinterlander</span><span class="path-tag">Alluvian</span><span class="path-tag">Kaevur</span></div>
+    <p>Hardy survivors of Cressida's wilderness. Hinterlanders are trackers and hunters. Alluvians are farmers and healers. Kaevurs are miners and subterranean explorers.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Hinterlander Heroic — Master of the Hunt:</strong> +10 temp HP and +2 damage during Hunting Expeditions; locate all stealthed characters in LOS for 10 min. Lead T5 Hunting Expeditions.</p>
+        <p><strong>Alluvian Heroic — Square Up, City Slicker!:</strong> Lead T5 Foraging. Taunt a single target with bonus damage; if they flee or Deny, counter their social skills for 3 months.</p>
+        <p><strong>Kaevur Heroic — Rockfall!:</strong> Lead T5 Mining. Once/game: "By My Voice, Difficult Terrain! 5 min." Friendly faction immune.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHOLAR -->
+  <div class="class-block">
+    <div class="class-name">Scholar</div>
+    <span class="class-category-tag cat-frontier">Frontier</span>
+    <div><span class="path-tag">Instructor</span><span class="path-tag">Astral Cartographer</span><span class="path-tag">Technologist</span></div>
+    <p>Academics at the forefront of knowledge. Instructors teach multiple students at once. Astral Cartographers blend academics and heroics. Technologists specialize in cybersecurity and augmentation.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Instructor Heroic — Transcendent Knowledge:</strong> Once/day: Use any R3-or-lower skill for 1 hour. Can teach it normally.</p>
+        <p><strong>Astral Cartographer Heroic — Never Lost:</strong> Walk to play area edge, spend 3 SP to teleport to faction HQ. Can bring additional characters for 2 SP each.</p>
+        <p><strong>Technologist Heroic — Augmentation Genius:</strong> Use T5 Augment Schematics. Create new Augment Schematics/Knacks for 10 RP (once/3 games).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC SERVANT -->
+  <div class="class-block">
+    <div class="class-name">Public Servant</div>
+    <span class="class-category-tag cat-social">Social</span>
+    <div><span class="path-tag">Officer</span><span class="path-tag">Politician</span><span class="path-tag">Investigator</span></div>
+    <p>Officers bolster allies with leadership. Politicians provide governmental oversight. Investigators are detectives and the closest thing Cressida has to law enforcement.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Officer Heroic — Perfect Plan:</strong> Once/game: "All (Faction) Double Energy Shield, 10 min, restore 10 SP."</p>
+        <p><strong>Politician Heroic — Grand PooBah:</strong> Once/day: "By My Voice, Bravery 10 min!" Can make Infuriate a By My Voice Unavoidable call. Free Deny; Intel costs +1 RP.</p>
+        <p><strong>Investigator Heroic — Warrant:</strong> Once/game: Target with 3 Rumors or 1 Secret—search party gains +1 damage, Doorkicker, free forensics.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SILVERTONGUE -->
+  <div class="class-block">
+    <div class="class-name">Silvertongue</div>
+    <span class="class-category-tag cat-social">Social</span>
+    <div><span class="path-tag">Shady</span><span class="path-tag">Entrepreneur</span><span class="path-tag">Overlander</span></div>
+    <p>Masters of commerce, negotiation, and questionable deals. Shady types work the black market. Entrepreneurs build business empires. Overlanders are convoy specialists.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Shady Heroic — Keep Talking:</strong> Once/game: Can't be attacked (attacker must Deny each attack), immune to Silence. Ends if you stop talking 5+ seconds.</p>
+        <p><strong>Entrepreneur Heroic — Embargo:</strong> Spend 5 RP: Select an item from any Economic List—can't be purchased by other factions until next event.</p>
+        <p><strong>Overlander Heroic — Logistical Genius:</strong> Spend 10 RP to create a new Convoy Job (with approval, once/6 months).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPY -->
+  <div class="class-block">
+    <div class="class-name">Spy</div>
+    <span class="class-category-tag cat-social">Social</span>
+    <div><span class="path-tag">Saboteur</span><span class="path-tag">Infiltrator</span><span class="path-tag">Rumormonger</span></div>
+    <p>Eyes, ears, and covert hands of a faction. Saboteurs destroy from inside. Infiltrators master burglary and disguise. Rumormongers leverage information as a weapon.</p>
+    <div class="collapsible"><button class="collapsible-toggle" onclick="toggleCollapsible(this)"><span>View All Skills & Heroic Actions</span><span class="arrow">▸</span></button>
+      <div class="collapsible-content">
+        <p><strong>Saboteur Heroic — Mass Sabotage:</strong> Once/game: "By My Voice All (faction), Sabotage Shatter Held Firearms."</p>
+        <p><strong>Infiltrator Heroic — Assumed Identity:</strong> Spend 3 RP to create a Persona (faction, background, class, 51 XP). Rank 3 in that faction. Lasts indefinitely until a non-persona skill is used.</p>
+        <p><strong>Rumormonger Heroic — Background Check:</strong> Once/game: Access a target's Intel List at a terminal. With consent, spend 3 RP to remove an item. Can use T5 Offensive Hack Fragments.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APTITUDE & DOWNTIME -->
+  <div class="section">
+    <h3 class="section-title">Aptitude Skills</h3>
+    <p>A character may learn up to <strong>3 Aptitude skills</strong> (3 XP each, no teacher required). These include: Block, Basic Dodge, Keen Eyes, Power Armor Novice, Two-Hand Fighting, Basic Repair, Knack For Creation, Salvage, Wilderness Bound, Mess, Basic First Aid, Digital Circumvention, Copy, Ringleader, Poisoner, Deny, Basic Burglary, Doorkicker, Fast Talker, Unflappable, Steady Feet, Chemical Identification, and Financial Backing.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Downtime Skills</h3>
+    <p>Activities used to relax or train. When two characters with a matching downtime skill roleplay together, they regain <strong>1 SP per 10 minutes</strong> (2 SP if one player is within their first 3 games). Active, enthusiastic roleplay required.</p>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Class</th><th>Skill</th><th>Activity</th></tr></thead>
+      <tbody>
+        <tr><td>Sharpshooter</td><td class="skill-name">Target Practice</td><td>Practice with firearms on stationary targets</td></tr>
+        <tr><td>Striker</td><td class="skill-name">Sparring</td><td>Sparring with one another</td></tr>
+        <tr><td>Operative</td><td class="skill-name">Stealth Training</td><td>Competing to walk near groups undetected</td></tr>
+        <tr><td>Doctor</td><td class="skill-name">Collaboration</td><td>Discuss medical problems, examine tools, health checks</td></tr>
+        <tr><td>Troubleshooter</td><td class="skill-name">Hacker Tag</td><td>Game of "tag" with packets</td></tr>
+        <tr><td>Tradeswright/Digismith</td><td class="skill-name">Compare Notes</td><td>Share notes, materials, schematics; maintain equipment</td></tr>
+        <tr><td>Silvertongue</td><td class="skill-name">Charismatism</td><td>Compete to convince characters of farcical concepts</td></tr>
+        <tr><td>Pub. Servant/Scholar</td><td class="skill-name">Debateur</td><td>Hotly debate any topic to convince others</td></tr>
+        <tr><td>Spy</td><td class="skill-name">Information Gathering</td><td>Compete to gather most factual info in 10 minutes</td></tr>
+        <tr><td>Ridgerunner</td><td class="skill-name">Tracking Practice</td><td>Hide and seek within a time limit</td></tr>
+        <tr><td>Universal</td><td class="skill-name">Have a Meal</td><td>Consume a carded meal item together</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 5: COMBAT RULES -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch5">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 05</div>
+    <h2 class="chapter-title">Combat Rules</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Ranged Combat</h3>
+    <p>Performed using foam-firing toys ("blasters"). Max <strong>100 FPS</strong> for HIR-style, <strong>85 FPS</strong> for dart-style. Use Nerf, Adventure Force, or X-Shot brand ammo only. Types: <strong>Primary</strong> (two-handed), <strong>Secondary</strong> (one-handed), <strong>Bow</strong> (single-action), <strong>Thrown</strong> (foam, ≤12"), <strong>Heavy</strong> (two-handed, requires training). Action types: Single Action, Semi-Automatic, Fully Automatic (always calls 1 damage).</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Melee Combat</h3>
+    <p>Foam weapons with a non-wood, non-metal core wrapped in soft foam. Swing in a 45–90° arc with lightest touch. No hooking, trapping, or thrusting. <strong>Flurry cap:</strong> 3 consecutive attacks, then 1-second pause. Types: <strong>Primary</strong> (26–46"), <strong>Secondary</strong> (12–26"), <strong>Fisticuff</strong> (12–26", counts as both primary and secondary), <strong>Two-Hand</strong> (46–72").</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Troubleshooting Combat</h3>
+    <p>Hacking via neural implants using <strong>packets</strong> (6" fabric squares filled with birdseed). State the ability call, throw the packet. Hits on character, weapons, or worn items apply the effect.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Armor</h3>
+    <p><strong>Standard Armor</strong> — Relaxed physrep, lower armor value. <strong>Power Armor</strong> — Extensive physreps, higher value and effects. <strong>Physical Shields</strong> — Carried on one arm, max 5' × 2.5'. Block melee and thrown; ranged and troubleshooting attacks that hit shields are considered hits. Types: Light (woven fibers), Medium (cloth + plating or leather), Heavy (leather + metal/plastic plates), Power (heavy + tech elements, lights, articulating frame).</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Rule of Ten and Twenty</h3>
+    <div class="info-panel">
+      <div class="panel-label">Damage Caps</div>
+      <p><strong>Unactivated attacks</strong> (no SP/RP/item cost, ≤1 min effects): Max <strong>10 damage</strong>.</p>
+      <p><strong>Activated attacks</strong> (uses SP/RP/items, <1 min effects): Max <strong>20 damage</strong> (unless a set number).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Delivery Methods</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Name</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name">Snipe</td><td>Gesture/name target + damage. Automatic hit. Ranged only.</td></tr>
+        <tr><td class="skill-name">Hacked!</td><td>Gesture/name target + damage. Automatic hit. Troubleshooting only.</td></tr>
+        <tr><td class="skill-name">AOE X</td><td>All targets within X distance of impact. Cannot be Dodged/Blocked without specific skills.</td></tr>
+        <tr><td class="skill-name">AOE X Self</td><td>Centered on user. Cannot be Dodged/Blocked without specific skills.</td></tr>
+        <tr><td class="skill-name">Sabotage</td><td>Equipment disruption. Countered by anti-Shatter effects.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Attack Types</h3>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin: 1rem 0;">
+      <span class="tag tag-fire">Fire — Red glow</span>
+      <span class="tag tag-frost">Frost — Blue glow</span>
+      <span class="tag tag-acid">Acid — Green glow</span>
+      <span class="tag tag-lightning">Lightning — Yellow glow</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Taglines</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Tag</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name text-magenta">Body</td><td>Ignores Armor and Energy Shields</td></tr>
+        <tr><td class="skill-name text-cyan">Ion</td><td>Target in power armor is Slowed 3 seconds</td></tr>
+        <tr><td class="skill-name text-yellow">Huge</td><td>Cannot be physically blocked. Never bypasses shields/armor.</td></tr>
+        <tr><td class="skill-name text-red">Unavoidable</td><td>Cannot use skills/abilities to negate</td></tr>
+        <tr><td class="skill-name text-green">(Type) Hunter</td><td>Named type takes double damage</td></tr>
+        <tr><td class="skill-name text-red">Death</td><td>If reduced to 0 HP, immediately dead (no bleedout)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Offensive Effects</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Effect</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name">Slow</td><td>Cannot run; 1-second pause between attacks</td></tr>
+        <tr><td class="skill-name">Shatter X</td><td>Named item/limb stops functioning until Repaired/Fixed</td></tr>
+        <tr><td class="skill-name">Stun</td><td>Cannot move, use skills, or attack (default 5s)</td></tr>
+        <tr><td class="skill-name">Disarm</td><td>Drop what's in your hands safely</td></tr>
+        <tr><td class="skill-name">Blind</td><td>Cannot activate sight-requiring skills or make attacks</td></tr>
+        <tr><td class="skill-name">Knockdown</td><td>Crouch/sit/lay, can't move or use skills (5 seconds)</td></tr>
+        <tr><td class="skill-name">Knockback (X)</td><td>Walk backward X steps</td></tr>
+        <tr><td class="skill-name">Silence</td><td>Cannot speak or use speech-requiring skills</td></tr>
+        <tr><td class="skill-name">Teleport (X)</td><td>Go OOP, walk X steps in specified direction</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Defensive Effects</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Effect</th><th>Counters</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name">Block</td><td>Melee attacks from front (need weapon in hand)</td></tr>
+        <tr><td class="skill-name">Dodge</td><td>Ranged attacks (may counter Melee or AoE with skills)</td></tr>
+        <tr><td class="skill-name">Hardwired</td><td>Troubleshooting attacks from all directions</td></tr>
+        <tr><td class="skill-name">Deny</td><td>Social effects</td></tr>
+        <tr><td class="skill-name">Reduced (Type)</td><td>Damage Reduction for applicable types (can't reduce below 1)</td></tr>
+        <tr><td class="skill-name">No Effect</td><td>Complete immunity to the targeting effect</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Positive, Social & Battlefield Effects</h3>
+    <p><strong>Positive:</strong> Restore (Stat) (Value), Boost (Stat) (Value), Imbue (Skill/Effect) (Uses).</p>
+    <p><strong>Social:</strong> Convince (must follow command), Taunt (must attack user), Enrage (no offensive skills), Rally (faction takes called effects). All countered by Deny.</p>
+    <p><strong>Battlefield:</strong> Smoke (all may use stealth), Difficult Terrain (all are Slowed), EMP (no skills/items, shields depleted).</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Signs & Bands</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Sign/Band</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name">White Headband / Hand Over Head</td><td>Out Of Play — character is not in play</td></tr>
+        <tr><td class="skill-name">Orange Headband</td><td>Non-Combat player — no physical attacks</td></tr>
+        <tr><td class="skill-name">Purple Headband / Hand on Shoulder</td><td>Stealth Sign — cannot be perceived without Notice</td></tr>
+        <tr><td class="skill-name">Fist on Chest + Eye Contact</td><td>Battlefield Check — thumbs up/down response</td></tr>
+        <tr><td class="skill-name">White Armband</td><td>CvC Opt-Out</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 6: FRONTIER RULES -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch6">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 06</div>
+    <h2 class="chapter-title">Frontier Rules</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">The General Store</h3>
+    <p>A location staffed by the Logistics Team for managing item creation skills. Kiosks allow characters to register item creation in advance for efficient pickup.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Material Gathering</h3>
+    <p>Materials fall into three categories: <strong>Organic</strong> (cooking, hermetics), <strong>Inorganic</strong>, and <strong>Manufactured</strong> (buildings, gadgets). Gathered via <strong>Homestead Items</strong> (3 max per game, spend RP), <strong>Skills</strong>, and <strong>Expeditions</strong> (led by Ridgerunners).</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Item Creation</h3>
+    <p><strong>Digipressing</strong> — Rapid fabrication using Digipress Chips. Spend RP, wait 5 minutes, items last until next RP refresh.</p>
+    <p><strong>Crafting</strong> — Obtain a Schematic, gather materials, use a Workspace. Items are permanent but require more steps and time.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Modifications & Accessories</h3>
+    <p>Mods affect weapons and power armor (one per type slot). Accessories are wearable items granting effects (one per slot).</p>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Item</th><th>Mod/Slot Types</th></tr></thead>
+      <tbody>
+        <tr><td>Ranged Weapon</td><td>Barrel, Magazine, Sight, Grip, Receiver</td></tr>
+        <tr><td>Melee Weapon</td><td>Grip, Material, Coating</td></tr>
+        <tr><td>Power Armor</td><td>Arms/Hands, Legs/Feet, Plating, Computational, Head, Power Plant</td></tr>
+        <tr><td>Accessories</td><td>Head, Torso, Legs/Feet, Arms/Hands</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Augments</h3>
+    <p><strong>Cybernetic Augments</strong> (replacement limbs, neural computers) reduce Skill Points by augment tier on install. <strong>Genetic Augments</strong> (pheromone glands, enhanced eyes) reduce Health Points by tier. Only installable by characters with Surgery skills.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Disease</h3>
+    <p>Contracted during play. A marshall marks your sheet, and you receive a Disease Card from the General Store. Players can gather <strong>Sample</strong> cards via Study skills, convert them to <strong>Clue</strong> cards, and ultimately create vaccines, cures, or weaponized strains.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Teaching & Learning</h3>
+    <p>Any character can teach a skill: <strong>5 minutes of teaching RP per tier</strong>. Stats can be self-learned with <strong>10 minutes of contemplation RP</strong>.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Convoy Jobs & Vehicles</h3>
+    <p>Convoy Jobs represent trade, cargo transport, or banditry—using RP and vehicles. Each job has Cargo Value, Cost, Danger Value, and Reward. Vehicles have Fuel Cost, Capacity, Offense, Defense, and Hardiness. <strong>Warning:</strong> convoy jobs carry real risk, including possible character death.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Missions: Patrols, Forays, Expeditions</h3>
+    <p><strong>Patrols</strong> — Combat missions led by Officers. <strong>Forays</strong> — Exploration missions led by Astral Cartographers. <strong>Expeditions</strong> — Material gathering missions led by Ridgerunners. All require a Marshall among participants.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Economic Lists</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>List</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name">Wholesale</td><td>Purchase components for item creation</td></tr>
+        <tr><td class="skill-name">Resourceful</td><td>Purchase material items</td></tr>
+        <tr><td class="skill-name">Shipping</td><td>Sell specific items</td></tr>
+        <tr><td class="skill-name">Digital Catalog</td><td>Purchase schematics and digipress chips</td></tr>
+        <tr><td class="skill-name">Contraband</td><td>Purchase illicit items</td></tr>
+        <tr><td class="skill-name">Job Board</td><td>Talon Compact jobs and purchase requests</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Fields of Study</h3>
+    <p>Deep knowledge in subjects that may grant information on modules, research bonuses, or item usage. Fields include: Geology, Zoology, Current Events, Politics, Medicine, Geography, Travel, Law, Botany, Chemistry, Structural Engineering, Arms and Armor, Emerging Technology, and Faction-specific knowledge.</p>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 7: SKULLDUGGERY -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch7">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 07</div>
+    <h2 class="chapter-title">Skullduggery</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Stealth</h3>
+    <p>Raise the Stealth Sign (hand on opposite shoulder) or wear a purple headband. While stealthed, you cannot be perceived without specialized skills. Broken by the <strong>Notice</strong> effect. Some skills allow attacking from stealth with melee or ranged weapons with the Quiet modifier.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Locks</h3>
+    <p><strong>Physical Locks</strong> — Picked with skills/items, time based on tier. Toyetic elements may reduce time.</p>
+    <p><strong>Electronic Locks</strong> — Hacked with skills/items, time based on tier. Toyetic elements may reduce time.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Hack Fragments</h3>
+    <p>Specialized software (Offensive or Defensive) used at Terminals. <strong>Offensive:</strong> Find Hacking Marshal → specify target → spend resources → defense check → Hack Time → if uninterrupted, effects are delivered. <strong>Defensive:</strong> Simpler—find Marshal, spend resources, effects applied after Hack Time. Defensive fragments can target willing characters.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Heists</h3>
+    <p>Covert missions for sabotage, theft, or corporate espionage. Led by Spies, Silvertongues, or characters with the Ringleader Aptitude. Require a Marshall among participants.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Surveillance, Rumors & Intel</h3>
+    <p><strong>Surveillance Gear</strong> — Hidden with SP investment. Finding it requires spending more SP than were used to place it. Must be in place for 4 hours.</p>
+    <p><strong>Rumors</strong> — Random character info received at check-in. Not always true.</p>
+    <p><strong>Intel List</strong> — Secrets a character has accumulated. Up to 3 may be marked as Secrets (protected from random access). MANTIS affiliation is never revealed via Intel.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Disguise</h3>
+    <p>A disguised character is treated as a separate entity for meta knowledge purposes. Disguise ends when affected by <strong>Bound By Law</strong>.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Restricted Areas</h3>
+    <div class="table-wrapper"><table class="skill-table">
+      <thead><tr><th>Type</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td class="skill-name text-green">Open</td><td>Any character, unaffiliated areas</td></tr>
+        <tr><td class="skill-name text-yellow">Semi-Restricted</td><td>Faction common areas; non-members need firm rationale</td></tr>
+        <tr><td class="skill-name text-red">Restricted</td><td>Sleeping, secure, sensitive areas; non-members almost never allowed</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<!-- CHAPTER 8: OUT OF PLAY -->
+<!-- ================================================================ -->
+<section class="chapter" id="ch8">
+  <div class="chapter-header">
+    <div class="chapter-number">Chapter 08</div>
+    <h2 class="chapter-title">Out of Play</h2>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Community Standards</h3>
+    <p>All participants must treat others with dignity and respect. Nomad reserves the right to refuse service to protect its community. Players must be of legal age. Out-of-play bigotry, discrimination, sexual harassment, non-consensual physical touch, mood-affecting substances, and concealed prior disciplinary actions from other LARPs are all prohibited. Sexual intercourse is prohibited at Nomad due to communal sleeping spaces.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Battlefield Check System</h3>
+    <p>Make a fist against your chest while making eye contact. Response: <strong>thumbs-up</strong> (willing to continue) or <strong>thumbs-down</strong> (unwilling). Anything other than a clear thumbs-up is a thumbs-down. If a player responds negatively, ensure their wellbeing and offer to exit the scene.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="section-title">Character vs. Character Conflict (CvC)</h3>
+
+    <div class="info-panel">
+      <div class="panel-label">Combat CvC</div>
+      <p>Requires a Marshall (of a different faction). Battlefield Check required if potential for death or permanent harm. If the other player reacts negatively, CvC stops immediately. Pre-negotiate whenever possible. 5+ character CvC requires a staff marshal or New Player Advocate.</p>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Economic CvC</div>
+      <p>Covers theft and duplicitous economic behavior. Theft requires a Marshal. Consider potential for negative emotional response and pre-negotiate when appropriate.</p>
+    </div>
+
+    <div class="info-panel">
+      <div class="panel-label">Social CvC</div>
+      <p>Covers negative social skill use and malicious social actions. Requires a Marshal for negative social effects. Consider emotional impact and pre-negotiate.</p>
+    </div>
+
+    <div class="info-panel warning">
+      <div class="panel-label">CvC Opt-Out</div>
+      <p>Register at Operations and don a <strong>white armband</strong>. Players should avoid Combat CvC with opted-out players and must pre-negotiate any CvC. Opted-out players may not initiate non-negotiated Combat CvC.</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- end container -->
+
+<footer>
+  <div class="footer-logo">NOMAD</div>
+  <p>Live-Action Roleplaying Game — 27th Century — Cressida</p>
+  <p style="margin-top: 0.5rem;">Beta Rulebook Edition</p>
+</footer>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Collapsible sections
+function toggleCollapsible(btn) {
+  btn.classList.toggle('active');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('show');
+}
+
+// Back to top button
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTop');
+  btn.classList.toggle('visible', window.scrollY > 600);
+});
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
